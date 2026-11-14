@@ -1,101 +1,319 @@
-<script>
-  const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxDqY78dB3Pw41a0IsssGgUaS82s8bdOBSDuNNteY6fRH996EfgMEeJOXYPi6wS7KZfFA/exec";
-  const NOMOR_ADMIN = "6281211855946";
-  const HARGA_PER_SIZE = {
-    S: 150000,
-    M: 150000,
-    L: 150000,
-    XL: 150000,
-    XXL: 150000
-  };
-
-  function rupiah(value) {
-    return "Rp " + Number(value || 0).toLocaleString("id-ID");
-  }
-
-  function hitungTotal() {
-    const size = document.getElementById("ukuran").value;
-    const qty = Math.max(0, Number(document.getElementById("jumlah").value) || 0);
-    const total = (HARGA_PER_SIZE[size] || 0) * qty;
-    document.getElementById("totalDisplay").textContent = rupiah(total);
-    return total;
-  }
-
-  document.getElementById("ukuran").addEventListener("change", hitungTotal);
-  document.getElementById("jumlah").addEventListener("input", hitungTotal);
-
-  document.getElementById("orderForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    if (!form.reportValidity()) return;
-
-    const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
-    btn.textContent = "Menyimpan pesanan...";
-
-    const noPO = "PO-" + Date.now().toString().slice(-6);
-    const tanggal = new Date().toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "short",
-      year: "numeric"
-    });
-
-    const nama = document.getElementById("nama").value.trim();
-    const wa = document.getElementById("wa").value.trim();
-    const ukuran = document.getElementById("ukuran").value;
-    const jumlah = Number(document.getElementById("jumlah").value) || 1;
-    const alamat = document.getElementById("alamat").value.trim();
-    const totalText = rupiah(hitungTotal());
-    const pesanan = `Kaos Kosmik Size ${ukuran} (${jumlah}x)`;
-
-    const payload = new URLSearchParams({
-      action: "simpan",
-      no_po: noPO,
-      tanggal: tanggal,
-      nama: nama,
-      wa: wa,
-      ukuran: ukuran,
-      jumlah: String(jumlah),
-      pesanan: pesanan,
-      total: totalText,
-      alamat: alamat
-    });
-
-    const whatsappText = [
-      "*ORDER KAOS KOSMIK BOGOR*",
-      `No. PO: *${noPO}*`,
-      `Nama: ${nama}`,
-      `No. WA: ${wa}`,
-      `Pesanan: ${pesanan}`,
-      `Total: ${totalText}`,
-      `Alamat: ${alamat}`
-    ].join("\n");
-
-    const whatsappUrl = `https://wa.me/${NOMOR_ADMIN}?text=${encodeURIComponent(whatsappText)}`;
-
-    try {
-      await fetch(URL_APPS_SCRIPT, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-        },
-        body: payload.toString()
-      });
-
-      // setelah request terkirim, buka WhatsApp
-      alert("Pesanan berhasil dikirim ke admin. Silakan lanjutkan ke WhatsApp.");
-      window.location.href = whatsappUrl;
-
-    } catch (error) {
-      console.error("Gagal kirim:", error);
-      alert("Pesanan belum tersimpan di Google Sheets. Coba lagi.");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Simpan & Kirim ke WhatsApp";
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Order Kaos Kosmik Bogor</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b1120;
+      color: #f8fafc;
     }
-  });
 
-  hitungTotal();
-</script>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 15px 16px;
+      background: #0b1120;
+    }
+
+    .order-card {
+      width: min(100%, 584px);
+      margin: 0 auto;
+      padding: 24px 21px 19px;
+      border: 1px solid #293852;
+      border-radius: 11px;
+      background: #141e33;
+    }
+
+    header {
+      padding-bottom: 17px;
+      margin-bottom: 21px;
+      text-align: center;
+      border-bottom: 1px solid #293852;
+    }
+
+    h1 {
+      margin: 0 0 7px;
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #9db4d7;
+      font-size: 12px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .required {
+      color: #fca5a5;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-height: 39px;
+      padding: 10px 13px;
+      border: 1px solid #34445f;
+      border-radius: 8px;
+      outline: none;
+      background: #0b1120;
+      color: #f8fafc;
+      font: inherit;
+      font-size: 12px;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #718198;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.18);
+    }
+
+    select { cursor: pointer; }
+
+    textarea {
+      min-height: 39px;
+      resize: vertical;
+    }
+
+    .estimate {
+      display: flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: space-between;
+      margin: 19px 0 16px;
+      padding: 0 14px;
+      border: 1px solid #293852;
+      border-radius: 8px;
+      background: #0b1120;
+      font-size: 12px;
+    }
+
+    .estimate strong {
+      color: #00d395;
+      font-size: 16px;
+    }
+
+    .price-note {
+      display: none;
+      margin: -8px 0 14px;
+      color: #fbbf24;
+      font-size: 11px;
+    }
+
+    button {
+      width: 100%;
+      min-height: 42px;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(100deg, #2864ea, #1d4ed8);
+      color: white;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      filter: brightness(1.08);
+    }
+
+    button:focus-visible {
+      outline: 2px solid #93c5fd;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      .order-card { padding: 21px 16px 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="order-card">
+    <header>
+      <h1>Form Order Kaos Kosmik Bogor</h1>
+      <p class="subtitle">Komunitas Sepeda/Motor Listrik Kosmik Indonesia</p>
+    </header>
+
+    <form id="orderForm">
+      <div class="field">
+        <label for="name">Nama Pemesan <span class="required">*</span></label>
+        <input id="name" name="name" type="text" placeholder="Masukkan nama lengkap" autocomplete="name" required />
+      </div>
+
+      <div class="field">
+        <label for="phone">Nomor WhatsApp <span class="required">*</span></label>
+        <input id="phone" name="phone" type="tel" placeholder="Contoh: 081234567890" autocomplete="tel" required />
+      </div>
+
+      <div class="field">
+        <label for="size">Ukuran (Size) <span class="required">*</span></label>
+        <select id="size" name="size" required>
+          <option value="">-- Pilih Ukuran Kaos --</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+          <option value="XXL">XXL</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="quantity">Jumlah (Pcs) <span class="required">*</span></label>
+        <input id="quantity" name="quantity" type="number" min="1" step="1" value="1" required />
+      </div>
+
+      <div class="field">
+        <label for="address">Alamat Pengiriman / Catatan <span class="required">*</span></label>
+        <textarea id="address" name="address" placeholder="Tulis alamat lengkap atau catatan tambahan" required></textarea>
+      </div>
+
+      <div class="estimate" aria-live="polite">
+        <span>Estimasi Total</span>
+        <strong id="total">Rp 0</strong>
+      </div>
+
+      <p class="price-note" id="priceNote">
+        Harga ukuran ini belum diatur. Isi harga di PRICE_BY_SIZE pada kode.
+      </p>
+
+      <button type="submit">Simpan &amp; Kirim ke WhatsApp</button>
+    </form>
+  </main>
+
+  <script>
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxOnz80hwqVcRHMRAmqu6EXbRhrui4zEJDxtAxOX_OELMg28RX53-JhFFtbveD_YD1exQ/exec";
+    const WHATSAPP_NUMBER = "6281211855946";
+    const PRICE_BY_SIZE = { S: 150000, M: 150000, L: 150000, XL: 150000, XXL: 150000 };
+
+    const form = document.getElementById("orderForm");
+    const sizeInput = document.getElementById("size");
+    const quantityInput = document.getElementById("quantity");
+    const totalOutput = document.getElementById("total");
+    const priceNote = document.getElementById("priceNote");
+
+    const rupiah = (amount) =>
+      new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(amount);
+
+    function updateTotal() {
+      const size = sizeInput.value;
+      const quantity = Number(quantityInput.value) || 0;
+      const unitPrice = PRICE_BY_SIZE[size];
+
+      if (!size) {
+        totalOutput.textContent = "Rp 0";
+        priceNote.style.display = "none";
+        return;
+      }
+
+      if (unitPrice == null) {
+        totalOutput.textContent = "—";
+        priceNote.style.display = "block";
+        return;
+      }
+
+      totalOutput.textContent = rupiah(unitPrice * quantity);
+      priceNote.style.display = "none";
+    }
+
+    sizeInput.addEventListener("change", updateTotal);
+    quantityInput.addEventListener("input", updateTotal);
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!form.reportValidity()) return;
+
+      const size = document.getElementById("size").value;
+      const quantity = Number(document.getElementById("quantity").value) || 1;
+      const unitPrice = PRICE_BY_SIZE[size];
+      const totalText = unitPrice ? rupiah(unitPrice * quantity) : "Belum ditentukan";
+
+      const data = {
+        action: "simpan",
+        no_po: "PO-" + Date.now().toString().slice(-6),
+        tanggal: new Date().toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric"
+        }),
+        nama: document.getElementById("name").value.trim(),
+        wa: document.getElementById("phone").value.trim(),
+        ukuran: size,
+        jumlah: String(quantity),
+        pesanan: `Kaos Kosmik Size ${size} (${quantity}x)`,
+        total: totalText,
+        alamat: document.getElementById("address").value.trim()
+      };
+
+      const whatsappMessage = [
+        "*Pesanan Kaos Kosmik Bogor*",
+        "",
+        `Nama: ${data.nama}`,
+        `Nomor WhatsApp: ${data.wa}`,
+        `Ukuran: ${data.ukuran}`,
+        `Jumlah: ${quantity} pcs`,
+        `Estimasi total: ${data.total}`,
+        `Alamat / Catatan: ${data.alamat}`
+      ].join("\n");
+
+      const whatsappUrl =
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
+
+      const btn = event.submitter || document.querySelector("button[type='submit']");
+      btn.disabled = true;
+      btn.textContent = "Menyimpan...";
+
+      try {
+        const response = await fetch(URL_APPS_SCRIPT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+          },
+          body: new URLSearchParams(data).toString()
+        });
+
+        const result = await response.text();
+        console.log("Apps Script response:", result);
+
+        if (!response.ok) {
+          throw new Error("Server menolak request");
+        }
+
+        alert("Pesanan berhasil disimpan ke Google Sheets.");
+        window.location.href = whatsappUrl;
+
+      } catch (error) {
+        console.error("Gagal kirim data:", error);
+        alert("Pesanan gagal tersimpan. Periksa URL Apps Script atau deployment Web App.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Simpan & Kirim ke WhatsApp";
+      }
+    });
+  </script>
+</body>
+</html>
