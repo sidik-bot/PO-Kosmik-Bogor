@@ -8,7 +8,7 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #0b1120; color: #f1f5f9; margin: 0; padding: 0; min-height: 100vh; }
     
-    /* Navbar dengan Logo */
+    /* Navbar */
     .navbar { background: linear-gradient(90deg, #1d4ed8 0%, #1e40af 100%); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
     .brand { display: flex; align-items: center; gap: 12px; }
     .brand-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background-color: #000; border: 2px solid rgba(255,255,255,0.25); }
@@ -22,13 +22,11 @@
     .container { max-width: 680px; margin: 28px auto; padding: 0 16px; }
     .card { background-color: #131c31; border: 1px solid #26334d; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); margin-bottom: 20px; }
     
-    /* Header Form dengan Logo Utama */
     .form-header-center { text-align: center; margin-bottom: 22px; border-bottom: 1px solid #26334d; padding-bottom: 18px; }
-    .form-logo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; background-color: #000; border: 3px solid #334155; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .form-logo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; background-color: #000; border: 3px solid #334155; margin-bottom: 12px; }
     .header-title { font-size: 21px; font-weight: 700; margin: 0 0 6px 0; color: #fff; }
     .header-sub { font-size: 13px; color: #94a3b8; margin: 0; }
 
-    /* Alert Box */
     .info-box { background: rgba(30, 58, 138, 0.25); border: 1px solid #1d4ed8; color: #93c5fd; padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
 
     /* Form Elements */
@@ -37,15 +35,11 @@
     input, select, textarea { width: 100%; padding: 11px 14px; font-size: 14px; color: #f8fafc; background: #0b1120; border: 1px solid #334155; border-radius: 8px; outline: none; }
     input:focus, select:focus, textarea:focus { border-color: #38bdf8; }
     
-    /* Search Grid */
     .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
-    
-    /* Total & Buttons */
     .total-box { background: #0b1120; border: 1px solid #26334d; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
     .btn-primary { width: 100%; padding: 13px; background: linear-gradient(90deg, #2563eb, #1d4ed8); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
     .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    /* Result Order Card */
     .order-item { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 18px; margin-top: 16px; }
     .order-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 12px; }
     .po-badge { font-family: monospace; font-size: 14px; font-weight: 700; color: #60a5fa; }
@@ -61,16 +55,15 @@
 
   <nav class="navbar">
     <div class="brand">
-      <!-- Logo di Navbar -->
-      <img src="logo.jpeg" alt="Logo Kosmik" class="brand-logo" onerror="this.style.display='none'">
+      <img src="logo.png" alt="Logo Kosmik" class="brand-logo" onerror="this.style.display='none'">
       <div>
         <div class="brand-title">PO-Kosmik Bogor</div>
         <div class="brand-sub">Web Form & Cek Status Real-time</div>
       </div>
     </div>
     <div class="nav-tabs">
-      <button class="tab-btn active" id="btnTabForm" onclick="switchTab('form')">Form PO</button>
-      <button class="tab-btn" id="btnTabStatus" onclick="switchTab('status')">Status (<span id="totalOrderCount">0</span>)</button>
+      <button type="button" class="tab-btn active" id="btnTabForm" onclick="switchTab('form')">Form PO</button>
+      <button type="button" class="tab-btn" id="btnTabStatus" onclick="switchTab('status')">Status (<span id="totalOrderCount">0</span>)</button>
     </div>
   </nav>
 
@@ -79,7 +72,6 @@
     <!-- TAB 1: FORM PO -->
     <div id="viewForm" class="card">
       <div class="form-header-center">
-        <!-- Logo Utama di Atas Judul -->
         <img src="logo.png" alt="Logo Kosmik Indonesia" class="form-logo" onerror="this.style.display='none'">
         <h1 class="header-title">Form Order Kaos Kosmik Bogor</h1>
         <p class="header-sub">Komunitas Sepeda/Motor Listrik Kosmik Indonesia</p>
@@ -100,17 +92,17 @@
           <label>Ukuran (Size) *</label>
           <select id="ukuran" required onchange="hitungTotal()">
             <option value="" disabled selected>-- Pilih Ukuran Kaos --</option>
-            <option value="S" data-harga="150.000">S - Rp 150.000</option>
-            <option value="M" data-harga="150.000">M - Rp 150.000</option>
-            <option value="L" data-harga="150.000">L - Rp 150.000</option>
-            <option value="XL" data-harga="150.000">XL - Rp 150.000</option>
-            <option value="XXL" data-harga="175.000">XXL - Rp 175.000</option>
+            <option value="S" data-harga="150000">S - Rp 150.000</option>
+            <option value="M" data-harga="150000">M - Rp 150.000</option>
+            <option value="L" data-harga="150000">L - Rp 150.000</option>
+            <option value="XL" data-harga="150000">XL - Rp 150.000</option>
+            <option value="XXL" data-harga="150000">XXL - Rp 150.000</option>
           </select>
         </div>
 
         <div class="form-group">
           <label>Jumlah (Pcs) *</label>
-          <input type="number" id="jumlah" value="1" min="1" required oninput="hitungTotal()">
+          <input type="number" id="jumlah" value="1" min="1" required oninput="hitungTotal()" onchange="hitungTotal()">
         </div>
 
         <div class="form-group">
@@ -141,7 +133,7 @@
       <div class="search-grid">
         <div>
           <label>Cek No. PO</label>
-          <input type="text" id="cariPO" placeholder="Contoh: PO-2026..." oninput="filterPesanan()">
+          <input type="text" id="cariPO" placeholder="Contoh: PO-..." oninput="filterPesanan()">
         </div>
         <div>
           <label>Cek Nama Pemesan</label>
@@ -161,57 +153,54 @@
   </div>
 
   <script>
-    // 1. TEMPEL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+    // =========================================================================
+    // HANYA UBAH 2 BARIS DI BAWAH INI (PASTIKAN TANDA KUTIP TIDAK TERHAPUS)
+    // =========================================================================
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbx_rlHImvs4YUzlTJTuigfY3x4XIHj689Yg8C8phOvFcXLyj_dEkSrKscrJUedZ5jCbAA/exec";
-    
-    // 2. GANTI NOMOR WHATSAPP ADMIN (AWALI DENGAN 62)
     const NOMOR_ADMIN = "6281211855946";
+    // =========================================================================
 
     let semuaDataPO = [];
 
+    function hitungTotal() {
+      const sel = document.getElementById('ukuran');
+      const opt = sel.options[sel.selectedIndex];
+      let harga = 0;
+
+      if (opt && opt.value !== "") {
+        harga = parseInt(opt.getAttribute('data-harga')) || 0;
+      }
+
+      const qty = parseInt(document.getElementById('jumlah').value) || 0;
+      const total = harga * qty;
+      document.getElementById('totalDisplay').innerText = 'Rp ' + total.toLocaleString('id-ID');
+      return total;
+    }
+
     async function muatDataSheets() {
-      if (URL_APPS_SCRIPT.includes("PASTE_URL")) return;
+      if (!URL_APPS_SCRIPT || URL_APPS_SCRIPT.includes("PASTE_URL")) return;
       try {
-        const res = await fetch(URL_APPS_SCRIPT);
-        semuaDataPO = await res.json();
-        document.getElementById('totalOrderCount').innerText = semuaDataPO.length;
+        const res = await fetch(URL_APPS_SCRIPT + "?t=" + new Date().getTime());
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          semuaDataPO = data;
+          document.getElementById('totalOrderCount').innerText = semuaDataPO.length;
+          if (!document.getElementById('viewStatus').classList.contains('hidden')) {
+            filterPesanan();
+          }
+        }
       } catch (err) {
         console.error("Gagal memuat data:", err);
       }
     }
-    muatDataSheets();
 
     function switchTab(tab) {
-      document.getElementById('btnTabForm').classList.toggle('active', tab === 'form');
-      document.getElementById('btnTabStatus').classList.toggle('active', tab === 'status');
-      document.getElementById('viewForm').classList.toggle('hidden', tab !== 'form');
-      document.getElementById('viewStatus').classList.toggle('hidden', tab !== 'status');
-      if (tab === 'status') muatDataSheets();
-    }
-
-    function hitungTotal() {
-  const sel = document.getElementById('ukuran');
-  const opt = sel.options[sel.selectedIndex];
-  let harga = 0;
-
-  if (opt && opt.value !== "") {
-    if (opt.getAttribute('data-harga')) {
-      harga = parseInt(opt.getAttribute('data-harga'));
-    } else {
-      // Otomatis ambil angka dari teks seperti "XL - Rp 150.000"
-      const teksHarga = opt.text.split('Rp')[1];
-      if (teksHarga) {
-        harga = parseInt(teksHarga.replace(/\./g, '').trim()) || 0;
-      }
-    }
-  }
-
-  const qty = parseInt(document.getElementById('jumlah').value || 0);
-  const total = harga * qty;
-  document.getElementById('totalDisplay').innerText = 'Rp ' + total.toLocaleString('id-ID');
-  return total;
+document.getElementById('btnTabForm').classList.toggle('active', tab === 'form');
+document.getElementById('btnTabStatus').classList.toggle('active', tab === 'status');
+document.getElementById('viewForm').classList.toggle('hidden', tab !== 'form');
+document.getElementById('viewStatus').classList.toggle('hidden', tab !== 'status');
+if (tab === 'status') muatDataSheets();
 }
-
 document.getElementById('orderForm').addEventListener('submit', async function(e) {
 e.preventDefault();
 const btn = document.getElementById('submitBtn');
@@ -235,16 +224,20 @@ pesanan: pesananText,
 total: "Rp " + totalAngka.toLocaleString('id-ID'),
 alamat: alamat
 };
-if (!URL_APPS_SCRIPT.includes("PASTE_URL")) {
+// 1. Kirim ke Google Sheets dengan mode no-cors agar tidak diblokir browser
+if (URL_APPS_SCRIPT && !URL_APPS_SCRIPT.includes("PASTE_URL")) {
 try {
 await fetch(URL_APPS_SCRIPT, {
 method: 'POST',
+mode: 'no-cors',
+headers: { 'Content-Type': 'text/plain;charset=utf-8' },
 body: JSON.stringify(payload)
 });
 } catch (err) {
-console.error("Gagal simpan ke Sheets:", err);
+console.error("Error kirim Sheets:", err);
 }
 }
+// 2. Siapkan pesan WhatsApp
 const pesanWA = *ORDER KAOS KOSMIK BOGOR*%0A +
 No. PO: *${noPO}*%0A +
 ----------------------------------%0A +
@@ -257,8 +250,9 @@ btn.disabled = false;
 btn.innerText = "Simpan & Kirim ke WhatsApp";
 document.getElementById('orderForm').reset();
 hitungTotal();
-muatDataSheets();
-window.open(https://wa.me{NOMOR_ADMIN}?text=${pesanWA}, '_blank');
+setTimeout(muatDataSheets, 2000);
+// 3. Buka WhatsApp (menggunakan location.href agar tidak diblokir pop-up blocker HP/Browser)
+window.location.href = https://wa.me{NOMOR_ADMIN}?text=${pesanWA};
 });
 function filterPesanan() {
 const qPO = document.getElementById('cariPO').value.trim().toLowerCase();
@@ -271,9 +265,9 @@ wadah.innerHTML = <p style="color:#64748b; font-size:13px; text-align:center;">M
 return;
 }
 const hasil = semuaDataPO.filter(item => {
-const matchPO = !qPO || String(item['No PO']).toLowerCase().includes(qPO);
-const matchNama = !qNama || String(item['Nama']).toLowerCase().includes(qNama);
-const matchWA = !qWA || String(item['No WA']).toLowerCase().includes(qWA);
+const matchPO = !qPO || String(item['No PO'] || '').toLowerCase().includes(qPO);
+const matchNama = !qNama || String(item['Nama'] || '').toLowerCase().includes(qNama);
+const matchWA = !qWA || String(item['No WA'] || '').toLowerCase().includes(qWA);
 return matchPO && matchNama && matchWA;
 });
 if (hasil.length === 0) {
@@ -281,8 +275,11 @@ wadah.innerHTML = <p style="color:#f87171; font-size:13px; text-align:center;">D
 return;
 }
 wadah.innerHTML = hasil.map(item => {
-const isLunas = String(item['Status Bayar']).toUpperCase() === 'LUNAS';
+const isLunas = String(item['Status Bayar'] || '').toUpperCase() === 'LUNAS';
 const badgeClass = isLunas ? 'status-lunas' : 'status-belum';
-return <div class="order-item"> <div class="order-top"> <div> <span class="po-badge">${item['No PO']}</span> <span style="color:#64748b; font-size:12px; margin-left:8px;">${item['Tanggal']}</span> </div> <span class="status-badge ${badgeClass}">${item['Status Bayar']}</span> </div> <div class="order-detail"> <strong>${item['Pesanan']}</strong><br> <span style="color:#10b981; font-weight:700;">Total: ${item['Total']}</span> </div> <div style="font-size:13px; color:#cbd5e1; margin-bottom:10px;"> Resi Pengiriman: <strong style="color:#38bdf8;">${item['Resi Pengiriman']}</strong> </div> <div class="order-meta"> <span>Pemesan: ${item['Nama']}</span> <span>Alamat: ${item['Alamat']}</span> </div> </div>;
+return <div class="order-item"> <div class="order-top"> <div> <span class="po-badge">${item['No PO'] || '-'}</span> <span style="color:#64748b; font-size:12px; margin-left:8px;">${item['Tanggal'] || '-'}</span> </div> <span class="status-badge ${badgeClass}">${item['Status Bayar'] || 'BELUM LUNAS'}</span> </div> <div class="order-detail"> <strong>${item['Pesanan'] || '-'}</strong><br> <span style="color:#10b981; font-weight:700;">Total: ${item['Total'] || '-'}</span> </div> <div style="font-size:13px; color:#cbd5e1; margin-bottom:10px;"> Resi Pengiriman: <strong style="color:#38bdf8;">${item['Resi Pengiriman'] || '-'}</strong> </div> <div class="order-meta"> <span>Pemesan: ${item['Nama'] || '-'}</span> <span>Alamat: ${item['Alamat'] || '-'}</span> </div> </div>;
 }).join('');
 }
+// Jalankan pertama kali
+muatDataSheets();
+setInterval(muatDataSheets, 15000);
