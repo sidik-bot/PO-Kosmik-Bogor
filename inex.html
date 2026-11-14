@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PO-Kosmik Bogor | Form & Cek Status</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0b1120; color: #f1f5f9; margin: 0; padding: 0; min-height: 100vh; }
+    
+    /* Navbar */
+    .navbar { background: linear-gradient(90deg, #1d4ed8 0%, #1e40af 100%); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-icon { background-color: #10b981; color: #fff; width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; }
+    .brand-title { font-size: 18px; font-weight: 700; color: #fff; margin: 0; }
+    .brand-sub { font-size: 12px; color: #93c5fd; margin: 2px 0 0 0; }
+    .nav-tabs { display: flex; gap: 8px; }
+    .tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; background: rgba(255,255,255,0.12); color: #e2e8f0; transition: 0.2s; }
+    .tab-btn.active { background: #fff; color: #1e3a8a; }
+
+    /* Container & Card */
+    .container { max-width: 680px; margin: 28px auto; padding: 0 16px; }
+    .card { background-color: #131c31; border: 1px solid #26334d; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); margin-bottom: 20px; }
+    .header-title { font-size: 20px; font-weight: 700; margin: 0 0 6px 0; color: #fff; }
+    .header-sub { font-size: 13px; color: #94a3b8; margin: 0 0 20px 0; }
+
+    /* Alert Box */
+    .info-box { background: rgba(30, 58, 138, 0.25); border: 1px solid #1d4ed8; color: #93c5fd; padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+
+    /* Form Elements */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+    input, select, textarea { width: 100%; padding: 11px 14px; font-size: 14px; color: #f8fafc; background: #0b1120; border: 1px solid #334155; border-radius: 8px; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #38bdf8; }
+    
+    /* Search Grid */
+    .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    
+    /* Total & Buttons */
+    .total-box { background: #0b1120; border: 1px solid #26334d; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .btn-primary { width: 100%; padding: 13px; background: linear-gradient(90deg, #2563eb, #1d4ed8); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-wa { padding: 8px 14px; background: #10b981; color: #fff; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+
+    /* Result Order Card */
+    .order-item { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 18px; margin-top: 16px; }
+    .order-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 12px; }
+    .po-badge { font-family: monospace; font-size: 14px; font-weight: 700; color: #60a5fa; }
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status-lunas { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #059669; }
+    .status-belum { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #d97706; }
+    .order-detail { font-size: 14px; color: #e2e8f0; margin-bottom: 10px; line-height: 1.5; }
+    .order-meta { font-size: 13px; color: #94a3b8; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-top: 1px solid #1e293b; padding-top: 10px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-icon">PO</div>
+      <div>
+        <div class="brand-title">PO-Kosmik Bogor</div>
+        <div class="brand-sub">Web Form & Cek Status Real-time</div>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" id="btnTabForm" onclick="switchTab('form')">Form PO</button>
+      <button class="tab-btn" id="btnTabStatus" onclick="switchTab('status')">Status (<span id="totalOrderCount">0</span>)</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    
+    <!-- TAB 1: FORM PO -->
+    <div id="viewForm" class="card">
+      <h1 class="header-title">Form Order Kaos Kosmik Bogor</h1>
+      <p class="header-sub">Silakan isi data pemesanan kaos Anda di bawah ini.</p>
+
+      <form id="orderForm">
+        <div class="form-group">
+          <label>Nama Pemesan *</label>
+          <input type="text" id="nama" required placeholder="Masukkan nama lengkap">
+        </div>
+
+        <div class="form-group">
+          <label>Nomor WhatsApp *</label>
+          <input type="tel" id="wa" required placeholder="Contoh: 081234567890">
+        </div>
+
+        <div class="form-group">
+          <label>Ukuran (Size) *</label>
+          <select id="ukuran" required onchange="hitungTotal()">
+            <option value="" disabled selected>-- Pilih Ukuran Kaos --</option>
+            <option value="S" data-harga="85000">S - Rp 85.000</option>
+            <option value="M" data-harga="85000">M - Rp 85.000</option>
+            <option value="L" data-harga="85000">L - Rp 85.000</option>
+            <option value="XL" data-harga="90000">XL - Rp 90.000</option>
+            <option value="XXL" data-harga="95000">XXL - Rp 95.000</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Jumlah (Pcs) *</label>
+          <input type="number" id="jumlah" value="1" min="1" required oninput="hitungTotal()">
+        </div>
+
+        <div class="form-group">
+          <label>Alamat Pengiriman / Catatan *</label>
+          <textarea id="alamat" rows="3" required placeholder="Tulis alamat lengkap atau catatan tambahan"></textarea>
+        </div>
+
+        <div class="total-box">
+          <span style="color:#94a3b8; font-size:13px;">Estimasi Total</span>
+          <span style="color:#10b981; font-size:18px; font-weight:700;" id="totalDisplay">Rp 0</span>
+        </div>
+
+        <button type="submit" class="btn-primary" id="submitBtn">Simpan & Kirim ke WhatsApp</button>
+      </form>
+    </div>
+
+    <!-- TAB 2: CEK STATUS -->
+    <div id="viewStatus" class="card hidden">
+      <h1 class="header-title">Cek Status Pemesanan PO</h1>
+      <p class="header-sub">Masukkan minimal 2 kolom (misal: Nama + No. HP) untuk melihat status pesanan Anda.</p>
+
+      <div class="info-box">
+        Mode Verifikasi 2 Kolom: Isi minimal 2 kolom pencarian di bawah ini untuk melindungi privasi data pemesan.
+      </div>
+
+      <div class="search-grid">
+        <div>
+          <label>Cek No. PO</label>
+          <input type="text" id="cariPO" placeholder="Contoh: PO-2026..." oninput="filterPesanan()">
+        </div>
+        <div>
+          <label>Cek Nama Pemesan</label>
+          <input type="text" id="cariNama" placeholder="Nama Anda" oninput="filterPesanan()">
+        </div>
+        <div>
+          <label>Cek Nomor HP</label>
+          <input type="text" id="cariWA" placeholder="Contoh: 0812..." oninput="filterPesanan()">
+        </div>
+      </div>
+
+      <div id="hasilPencarian" style="margin-top: 16px;">
+        <p style="color:#64748b; font-size:13px; text-align:center;">Silakan isi minimal 2 kolom di atas untuk mencari pesanan.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // 1. TEMPEL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+    const URL_APPS_SCRIPT = "PASTE_URL_WEB_APP_ANDA_DI_SINI";
+    
+    // 2. GANTI NOMOR WHATSAPP ADMIN (AWALI DENGAN 62)
+    const NOMOR_ADMIN = "6281234567890";
+
+    let semuaDataPO = [];
+
+    // Ambil data dari Google Sheets saat halaman dibuka
+    async function muatDataSheets() {
+      if (URL_APPS_SCRIPT.includes("PASTE_URL")) return;
+      try {
+        const res = await fetch(URL_APPS_SCRIPT);
+        semuaDataPO = await res.json();
+        document.getElementById('totalOrderCount').innerText = semuaDataPO.length;
+      } catch (err) {
+        console.error("Gagal memuat data:", err);
+      }
+    }
+    muatDataSheets();
+
+    function switchTab(tab) {
+      document.getElementById('btnTabForm').classList.toggle('active', tab === 'form');
+      document.getElementById('btnTabStatus').classList.toggle('active', tab === 'status');
+      document.getElementById('viewForm').classList.toggle('hidden', tab !== 'form');
+      document.getElementById('viewStatus').classList.toggle('hidden', tab !== 'status');
+      if (tab === 'status') muatDataSheets();
+    }
+
+    function hitungTotal() {
+      const sel = document.getElementById('ukuran');
+      const opt = sel.options[sel.selectedIndex];
+      const harga = opt ? parseInt(opt.getAttribute('data-harga') || 0) : 0;
+      const qty = parseInt(document.getElementById('jumlah').value || 0);
+      const total = harga * qty;
+      document.getElementById('totalDisplay').innerText = 'Rp ' + total.toLocaleString('id-ID');
+      return total;
+    }
+
+    // Kirim data ke Google Sheets & WhatsApp
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerText = "Menyimpan Pesanan...";
+    const noPO = "PO-" + Date.now().toString().slice(-6);
+const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+const nama = document.getElementById('nama').value.trim();
+const wa = document.getElementById('wa').value.trim();
+const ukuran = document.getElementById('ukuran').value;
+const jumlah = document.getElementById('jumlah').value;
+const alamat = document.getElementById('alamat').value.trim();
+const totalAngka = hitungTotal();
+const pesananText = Kaos Kosmik Size ${ukuran} (${jumlah}x);
+const payload = {
+no_po: noPO,
+tanggal: tanggal,
+nama: nama,
+wa: wa,
+pesanan: pesananText,
+total: "Rp " + totalAngka.toLocaleString('id-ID'),
+alamat: alamat
+};
+// Kirim ke Google Sheets
+if (!URL_APPS_SCRIPT.includes("https://script.google.com/macros/s/AKfycbx_rlHImvs4YUzlTJTuigfY3x4XIHj689Yg8C8phOvFcXLyj_dEkSrKscrJUedZ5jCbAA/exec")) {
+try {
+await fetch(URL_APPS_SCRIPT, {
+method: 'POST',
+body: JSON.stringify(payload)
+});
+} catch (err) {
+console.error("Gagal simpan ke Sheets:", err);
+}
+}
+// Redirect ke WhatsApp
+const pesanWA = *ORDER KAOS KOSMIK BOGOR*%0A +
+No. PO: *${noPO}*%0A +
+----------------------------------%0A +
+*Nama:* ${encodeURIComponent(nama)}%0A +
+*No. WA:* ${encodeURIComponent(wa)}%0A +
+*Pesanan:* ${encodeURIComponent(pesananText)}%0A +
+*Total:* Rp ${totalAngka.toLocaleString('id-ID')}%0A +
+*Alamat:* ${encodeURIComponent(alamat)};
+btn.disabled = false;
+btn.innerText = "Simpan & Kirim ke WhatsApp";
+document.getElementById('orderForm').reset();
+hitungTotal();
+muatDataSheets();
+window.open(https://wa.me{NOMOR_ADMIN}?text=${pesanWA}, '_blank');
+});
+// Fitur Pencarian Status (Verifikasi 2 Kolom seperti di contoh)
+function filterPesanan() {
+const qPO = document.getElementById('cariPO').value.trim().toLowerCase();
+const qNama = document.getElementById('cariNama').value.trim().toLowerCase();
+const qWA = document.getElementById('cariWA').value.trim().toLowerCase();
+const wadah = document.getElementById('hasilPencarian');
+const kolomTerisi = [qPO, qNama, qWA].filter(val => val.length >= 2).length;
+if (kolomTerisi < 2) {
+wadah.innerHTML = <p style="color:#64748b; font-size:13px; text-align:center;">Masukkan minimal 2 kolom input (minimal 2 huruf/angka per kolom) untuk membuka status pesanan.</p>;
+return;
+}
+const hasil = semuaDataPO.filter(item => {
+const matchPO = !qPO || String(item['No PO']).toLowerCase().includes(qPO);
+const matchNama = !qNama || String(item['Nama']).toLowerCase().includes(qNama);
+const matchWA = !qWA || String(item['No WA']).toLowerCase().includes(qWA);
+return matchPO && matchNama && matchWA;
+});
+if (hasil.length === 0) {
+wadah.innerHTML = <p style="color:#f87171; font-size:13px; text-align:center;">Data pesanan tidak ditemukan. Periksa kembali ejaan Nama atau Nomor HP Anda.</p>;
+return;
+}
+wadah.innerHTML = hasil.map(item => {
+const isLunas = String(item['Status Bayar']).toUpperCase() === 'LUNAS';
+const badgeClass = isLunas ? 'status-lunas' : 'status-belum';
+return <div class="order-item"> <div class="order-top"> <div> <span class="po-badge">${item['No PO']}</span> <span style="color:#64748b; font-size:12px; margin-left:8px;">${item['Tanggal']}</span> </div> <span class="status-badge ${badgeClass}">${item['Status Bayar']}</span> </div> <div class="order-detail"> <strong>${item['Pesanan']}</strong><br> <span style="color:#10b981; font-weight:700;">Total: ${item['Total']}</span> </div> <div style="font-size:13px; color:#cbd5e1; margin-bottom:10px;"> Resi Pengiriman: <strong style="color:#38bdf8;">${item['Resi Pengiriman']}</strong> </div> <div class="order-meta"> <span>Pemesan: ${item['Nama']}</span> <span>Alamat: ${item['Alamat']}</span> </div> </div>;
+}).join('');
+}
+
+
