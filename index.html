@@ -3,94 +3,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PO-Kosmik Bogor | Form & Cek Status</title>
+  <meta name="theme-color" content="#0b1120">
+  <title>PO-Kosmik Bogor | Form &amp; Cek Status</title>
   <style>
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #0b1120; color: #f1f5f9; margin: 0; padding: 0; min-height: 100vh; }
-    
-    /* Navbar */
-    .navbar { background: linear-gradient(90deg, #1d4ed8 0%, #1e40af 100%); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background-color: #000; border: 2px solid rgba(255,255,255,0.25); }
-    .brand-title { font-size: 18px; font-weight: 700; color: #fff; margin: 0; }
-    .brand-sub { font-size: 12px; color: #93c5fd; margin: 2px 0 0 0; }
-    .nav-tabs { display: flex; gap: 8px; }
-    .tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; background: rgba(255,255,255,0.12); color: #e2e8f0; transition: 0.2s; }
-    .tab-btn.active { background: #fff; color: #1e3a8a; }
-
-    /* Container & Card */
-    .container { max-width: 680px; margin: 28px auto; padding: 0 16px; }
-    .card { background-color: #131c31; border: 1px solid #26334d; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); margin-bottom: 20px; }
-    
-    .form-header-center { text-align: center; margin-bottom: 22px; border-bottom: 1px solid #26334d; padding-bottom: 18px; }
-    .form-logo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; background-color: #000; border: 3px solid #334155; margin-bottom: 12px; }
-    .header-title { font-size: 21px; font-weight: 700; margin: 0 0 6px 0; color: #fff; }
-    .header-sub { font-size: 13px; color: #94a3b8; margin: 0; }
-
-    .info-box { background: rgba(30, 58, 138, 0.25); border: 1px solid #1d4ed8; color: #93c5fd; padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
-
-    /* Form Elements */
+    :root {
+      color-scheme: dark;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b1120;
+      color: #f8fafc;
+    }
+    * { box-sizing: border-box; }
+    body { min-height: 100vh; margin: 0; padding: 15px 16px; background: #0b1120; }
+    .navbar {
+      width: min(100%, 584px); margin: 0 auto 12px; display: flex;
+      align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .brand { color: #9db4d7; font-size: 12px; }
+    .brand strong { display: block; margin-bottom: 3px; color: #f8fafc; font-size: 14px; }
+    .nav-tabs { display: flex; gap: 7px; }
+    .tab-btn {
+      padding: 8px 11px; border: 1px solid #293852; border-radius: 7px;
+      background: #141e33; color: #cbd5e1; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .tab-btn.active { border-color: #2563eb; background: #1d4ed8; color: white; }
+    .container { width: min(100%, 584px); margin: 0 auto; }
+    .card {
+      padding: 24px 21px 19px; border: 1px solid #293852; border-radius: 11px;
+      background: #141e33;
+    }
+    .form-header-center {
+      margin-bottom: 21px; padding-bottom: 17px; text-align: center;
+      border-bottom: 1px solid #293852;
+    }
+    .header-title { margin: 0 0 7px; color: #fff; font-size: 18px; line-height: 1.3; font-weight: 700; }
+    .header-sub { margin: 0; color: #9db4d7; font-size: 12px; }
     .form-group { margin-bottom: 16px; }
-    label { display: block; font-size: 13px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
-    input, select, textarea { width: 100%; padding: 11px 14px; font-size: 14px; color: #f8fafc; background: #0b1120; border: 1px solid #334155; border-radius: 8px; outline: none; }
-    input:focus, select:focus, textarea:focus { border-color: #38bdf8; }
-    
-    .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
-    .total-box { background: #0b1120; border: 1px solid #26334d; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-    .btn-primary { width: 100%; padding: 13px; background: linear-gradient(90deg, #2563eb, #1d4ed8); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    .order-item { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 18px; margin-top: 16px; }
-    .order-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 12px; }
-    .po-badge { font-family: monospace; font-size: 14px; font-weight: 700; color: #60a5fa; }
-    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-    .status-lunas { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #059669; }
-    .status-belum { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #d97706; }
-    .order-detail { font-size: 14px; color: #e2e8f0; margin-bottom: 10px; line-height: 1.5; }
-    .order-meta { font-size: 13px; color: #94a3b8; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-top: 1px solid #1e293b; padding-top: 10px; }
-    .hidden { display: none; }
+    label { display: block; margin-bottom: 6px; color: #dbe5f3; font-size: 12px; font-weight: 700; }
+    input, select, textarea {
+      display: block; width: 100%; min-height: 39px; padding: 10px 13px;
+      border: 1px solid #34445f; border-radius: 8px; outline: none;
+      background: #0b1120; color: #f8fafc; font: inherit; font-size: 12px;
+    }
+    input::placeholder, textarea::placeholder { color: #718198; }
+    input:focus, select:focus, textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgb(59 130 246 / 18%); }
+    select { cursor: pointer; }
+    textarea { min-height: 39px; resize: vertical; }
+    .total-box {
+      display: flex; min-height: 48px; align-items: center; justify-content: space-between;
+      margin: 19px 0 16px; padding: 0 14px; border: 1px solid #293852;
+      border-radius: 8px; background: #0b1120; font-size: 12px;
+    }
+    .total-box span:first-child { color: #cbd5e1; }
+    #totalDisplay { color: #00d395; font-size: 16px; font-weight: 700; }
+    .btn-primary {
+      width: 100%; min-height: 42px; padding: 10px; border: 0; border-radius: 8px;
+      background: linear-gradient(100deg, #2864ea, #1d4ed8); color: #fff;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-primary:disabled { opacity: .65; cursor: wait; }
+    .hidden { display: none !important; }
+    .info-box { margin-bottom: 18px; padding: 12px; border: 1px solid #34445f; border-radius: 8px; color: #9db4d7; font-size: 12px; line-height: 1.5; }
+    .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .order-item { margin-top: 14px; padding: 16px; border: 1px solid #34445f; border-radius: 9px; background: #0b1120; }
+    .order-top, .order-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .order-top { padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #293852; }
+    .po-badge { color: #60a5fa; font-family: monospace; font-weight: 700; }
+    .status-badge { padding: 4px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .status-lunas { border: 1px solid #059669; color: #34d399; }
+    .status-belum { border: 1px solid #d97706; color: #fbbf24; }
+    .order-detail { margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
+    .order-meta { padding-top: 9px; border-top: 1px solid #293852; color: #9db4d7; font-size: 12px; }
+    .empty-message { color: #9db4d7; font-size: 12px; text-align: center; }
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      .card { padding: 21px 16px 17px; }
+      .brand { font-size: 11px; }
+      .tab-btn { padding: 7px 8px; }
+    }
   </style>
 </head>
 <body>
-
-  <nav class="navbar">
-    <div class="brand">
-      <img src="logo.jpeg" alt="Logo Kosmik" class="brand-logo" onerror="this.style.display='none'">
-      <div>
-        <div class="brand-title">PO-Kosmik Bogor</div>
-        <div class="brand-sub">Web Form & Cek Status Real-time</div>
-      </div>
-    </div>
+  <nav class="navbar" aria-label="Navigasi utama">
+    <div class="brand"><strong>PO-Kosmik Bogor</strong>Form order dan cek status</div>
     <div class="nav-tabs">
       <button type="button" class="tab-btn active" id="btnTabForm" onclick="switchTab('form')">Form PO</button>
-      <button type="button" class="tab-btn" id="btnTabStatus" onclick="switchTab('status')">Status (<span id="totalOrderCount">0</span>)</button>
+      <button type="button" class="tab-btn" id="btnTabStatus" onclick="switchTab('status')">Cek Status</button>
     </div>
   </nav>
 
-  <div class="container">
-    
-    <!-- TAB 1: FORM PO -->
-    <div id="viewForm" class="card">
+  <main class="container">
+    <section id="viewForm" class="card">
       <div class="form-header-center">
-        <img src="logo.png" alt="Logo Kosmik Indonesia" class="form-logo" onerror="this.style.display='none'">
         <h1 class="header-title">Form Order Kaos Kosmik Bogor</h1>
         <p class="header-sub">Komunitas Sepeda/Motor Listrik Kosmik Indonesia</p>
       </div>
-
       <form id="orderForm">
         <div class="form-group">
-          <label>Nama Pemesan *</label>
-          <input type="text" id="nama" required placeholder="Masukkan nama lengkap">
+          <label for="nama">Nama Pemesan <span aria-hidden="true">*</span></label>
+          <input type="text" id="nama" name="nama" autocomplete="name" required placeholder="Masukkan nama lengkap">
         </div>
-
         <div class="form-group">
-          <label>Nomor WhatsApp *</label>
-          <input type="tel" id="wa" required placeholder="Contoh: 081234567890">
+          <label for="wa">Nomor WhatsApp <span aria-hidden="true">*</span></label>
+          <input type="tel" id="wa" name="wa" autocomplete="tel" required placeholder="Contoh: 081234567890">
         </div>
-
         <div class="form-group">
-          <label>Ukuran (Size) *</label>
-          <select id="ukuran" required onchange="hitungTotal()">
+          <label for="ukuran">Ukuran (Size) <span aria-hidden="true">*</span></label>
+          <select id="ukuran" name="ukuran" required onchange="hitungTotal()">
             <option value="" disabled selected>-- Pilih Ukuran Kaos --</option>
             <option value="S" data-harga="150000">S - Rp 150.000</option>
             <option value="M" data-harga="150000">M - Rp 150.000</option>
@@ -99,218 +118,164 @@
             <option value="XXL" data-harga="150000">XXL - Rp 150.000</option>
           </select>
         </div>
-
         <div class="form-group">
-          <label>Jumlah (Pcs) *</label>
-          <input type="number" id="jumlah" value="1" min="1" required oninput="hitungTotal()" onchange="hitungTotal()">
+          <label for="jumlah">Jumlah (Pcs) <span aria-hidden="true">*</span></label>
+          <input type="number" id="jumlah" name="jumlah" value="1" min="1" step="1" required oninput="hitungTotal()">
         </div>
-
         <div class="form-group">
-          <label>Alamat Pengiriman / Catatan *</label>
-          <textarea id="alamat" rows="3" required placeholder="Tulis alamat lengkap atau catatan tambahan"></textarea>
+          <label for="alamat">Alamat Pengiriman / Catatan <span aria-hidden="true">*</span></label>
+          <textarea id="alamat" name="alamat" rows="1" required placeholder="Tulis alamat lengkap atau catatan tambahan"></textarea>
         </div>
-
-        <div class="total-box">
-          <span style="color:#94a3b8; font-size:13px;">Estimasi Total</span>
-          <span style="color:#10b981; font-size:18px; font-weight:700;" id="totalDisplay">Rp 0</span>
+        <div class="total-box" aria-live="polite">
+          <span>Estimasi Total</span><span id="totalDisplay">Rp 0</span>
         </div>
-
-        <button type="submit" class="btn-primary" id="submitBtn">Simpan & Kirim ke WhatsApp</button>
+        <button type="submit" class="btn-primary" id="submitBtn">Simpan &amp; Kirim ke WhatsApp</button>
       </form>
-    </div>
+    </section>
 
-    <!-- TAB 2: CEK STATUS -->
-    <div id="viewStatus" class="card hidden">
+    <section id="viewStatus" class="card hidden">
       <div class="form-header-center">
         <h1 class="header-title">Cek Status Pemesanan PO</h1>
-        <p class="header-sub">Masukkan minimal 2 kolom (misal: Nama + No. HP) untuk melihat status pesanan Anda.</p>
+        <p class="header-sub">Isi minimal 2 kolom untuk mencari pesanan Anda.</p>
       </div>
-
-      <div class="info-box">
-        Mode Verifikasi 2 Kolom: Isi minimal 2 kolom pencarian di bawah ini untuk melindungi privasi data pemesan.
-      </div>
-
+      <div class="info-box">Mode verifikasi 2 kolom membantu menjaga privasi data pemesan.</div>
       <div class="search-grid">
-        <div>
-          <label>Cek No. PO</label>
-          <input type="text" id="cariPO" placeholder="Contoh: PO-..." oninput="filterPesanan()">
-        </div>
-        <div>
-          <label>Cek Nama Pemesan</label>
-          <input type="text" id="cariNama" placeholder="Nama Anda" oninput="filterPesanan()">
-        </div>
-        <div>
-          <label>Cek Nomor HP</label>
-          <input type="text" id="cariWA" placeholder="Contoh: 0812..." oninput="filterPesanan()">
-        </div>
+        <div><label for="cariPO">No. PO</label><input id="cariPO" placeholder="Contoh: PO-..." oninput="filterPesanan()"></div>
+        <div><label for="cariNama">Nama Pemesan</label><input id="cariNama" placeholder="Nama Anda" oninput="filterPesanan()"></div>
+        <div><label for="cariWA">Nomor HP</label><input id="cariWA" placeholder="Contoh: 0812..." oninput="filterPesanan()"></div>
       </div>
-
-      <div id="hasilPencarian" style="margin-top: 16px;">
-        <p style="color:#64748b; font-size:13px; text-align:center;">Silakan isi minimal 2 kolom di atas untuk mencari pesanan.</p>
+      <div id="hasilPencarian" aria-live="polite" style="margin-top:16px">
+        <p class="empty-message">Silakan isi minimal 2 kolom di atas untuk mencari pesanan.</p>
       </div>
-    </div>
-
-  </div>
+    </section>
+  </main>
 
   <script>
-    // =========================================================================
-    // HANYA UBAH 2 BARIS DI BAWAH INI (PASTIKAN TANDA KUTIP TIDAK TERHAPUS)
-    // =========================================================================
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbx_rlHImvs4YUzlTJTuigfY3x4XIHj689Yg8C8phOvFcXLyj_dEkSrKscrJUedZ5jCbAA/exec";
     const NOMOR_ADMIN = "6281211855946";
-    // =========================================================================
-
     let semuaDataPO = [];
 
     function hitungTotal() {
-      const sel = document.getElementById('ukuran');
-      const opt = sel.options[sel.selectedIndex];
-      let harga = 0;
-
-      if (opt && opt.value !== "") {
-        harga = parseInt(opt.getAttribute('data-harga')) || 0;
-      }
-
-      const qty = parseInt(document.getElementById('jumlah').value) || 0;
-      const total = harga * qty;
-      document.getElementById('totalDisplay').innerText = 'Rp ' + total.toLocaleString('id-ID');
+      const select = document.getElementById('ukuran');
+      const option = select.options[select.selectedIndex];
+      const harga = Number(option?.dataset.harga || 0);
+      const jumlah = Math.max(0, Number(document.getElementById('jumlah').value) || 0);
+      const total = harga * jumlah;
+      document.getElementById('totalDisplay').textContent = 'Rp ' + total.toLocaleString('id-ID');
       return total;
     }
 
     async function muatDataSheets() {
-      if (!URL_APPS_SCRIPT || URL_APPS_SCRIPT.includes("PASTE_URL")) return;
       try {
-        const res = await fetch(URL_APPS_SCRIPT + "?t=" + new Date().getTime());
-        const data = await res.json();
+        const response = await fetch(URL_APPS_SCRIPT + '?t=' + Date.now());
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
         if (Array.isArray(data)) {
           semuaDataPO = data;
-          document.getElementById('totalOrderCount').innerText = semuaDataPO.length;
-          if (!document.getElementById('viewStatus').classList.contains('hidden')) {
-            filterPesanan();
-          }
+          if (!document.getElementById('viewStatus').classList.contains('hidden')) filterPesanan();
         }
-      } catch (err) {
-        console.error("Gagal memuat data:", err);
+      } catch (error) {
+        console.error('Gagal memuat data pesanan:', error);
       }
     }
 
     function switchTab(tab) {
-      document.getElementById('btnTabForm').classList.toggle('active', tab === 'form');
-      document.getElementById('btnTabStatus').classList.toggle('active', tab === 'status');
-      document.getElementById('viewForm').classList.toggle('hidden', tab !== 'form');
-      document.getElementById('viewStatus').classList.toggle('hidden', tab !== 'status');
-      if (tab === 'status') muatDataSheets();
+      const showForm = tab === 'form';
+      document.getElementById('btnTabForm').classList.toggle('active', showForm);
+      document.getElementById('btnTabStatus').classList.toggle('active', !showForm);
+      document.getElementById('viewForm').classList.toggle('hidden', !showForm);
+      document.getElementById('viewStatus').classList.toggle('hidden', showForm);
+      if (!showForm) muatDataSheets();
     }
 
-    document.getElementById('orderForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.innerText = "Sedang Menyimpan ke Database...";
+    document.getElementById('orderForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!event.currentTarget.reportValidity()) return;
 
-      const noPO = "PO-" + Date.now().toString().slice(-6);
+      const button = document.getElementById('submitBtn');
+      button.disabled = true;
+      button.textContent = 'Sedang menyimpan pesanan...';
+
+      const noPO = 'PO-' + Date.now().toString().slice(-6);
       const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
       const nama = document.getElementById('nama').value.trim();
       const wa = document.getElementById('wa').value.trim();
       const ukuran = document.getElementById('ukuran').value;
       const jumlah = document.getElementById('jumlah').value;
       const alamat = document.getElementById('alamat').value.trim();
-      const totalAngka = hitungTotal();
-      const totalText = "Rp " + totalAngka.toLocaleString('id-ID');
+      const total = hitungTotal();
+      const totalText = 'Rp ' + total.toLocaleString('id-ID');
       const pesananText = `Kaos Kosmik Size ${ukuran} (${jumlah}x)`;
+      const params = new URLSearchParams({
+        action: 'simpan', no_po: noPO, tanggal, nama, wa: "'" + wa,
+        pesanan: pesananText, total: totalText, alamat
+      });
+      const whatsappMessage = [
+        '*ORDER KAOS KOSMIK BOGOR*', `No. PO: *${noPO}*`,
+        `Nama: ${nama}`, `No. WA: ${wa}`, `Pesanan: ${pesananText}`,
+        `Total: ${totalText}`, `Alamat: ${alamat}`
+      ].join('\n');
+      const whatsappUrl = `https://wa.me/${NOMOR_ADMIN}?text=${encodeURIComponent(whatsappMessage)}`;
+      const whatsappWindow = window.open('', '_blank');
 
-      // Kirim data via parameter URL (GET) agar anti-blokir & langsung masuk Sheets
-      if (URL_APPS_SCRIPT && !URL_APPS_SCRIPT.includes("PASTE_URL")) {
-        const queryParams = new URLSearchParams({
-          action: "simpan",
-          no_po: noPO,
-          tanggal: tanggal,
-          nama: nama,
-          wa: "'" + wa, // Tanda kutip tunggal agar angka 0 di depan No HP tidak hilang di Sheets
-          pesanan: pesananText,
-          total: totalText,
-          alamat: alamat
-        });
-
-        try {
-          await fetch(`${URL_APPS_SCRIPT}?${queryParams.toString()}`);
-        } catch (err) {
-          console.error("Error simpan:", err);
-        }
+      try {
+        await fetch(`${URL_APPS_SCRIPT}?${params.toString()}`);
+      } catch (error) {
+        console.error('Gagal menyimpan ke Sheets:', error);
       }
 
-      const pesanWA = `*ORDER KAOS KOSMIK BOGOR*%0A` +
-                      `No. PO: *${noPO}*%0A` +
-                      `----------------------------------%0A` +
-                      `*Nama:* ${encodeURIComponent(nama)}%0A` +
-                      `*No. WA:* ${encodeURIComponent(wa)}%0A` +
-                      `*Pesanan:* ${encodeURIComponent(pesananText)}%0A` +
-                      `*Total:* ${encodeURIComponent(totalText)}%0A` +
-                      `*Alamat:* ${encodeURIComponent(alamat)}`;
-
-      btn.disabled = false;
-      btn.innerText = "Simpan & Kirim ke WhatsApp";
-      document.getElementById('orderForm').reset();
+      button.disabled = false;
+      button.textContent = 'Simpan & Kirim ke WhatsApp';
+      event.currentTarget.reset();
       hitungTotal();
-
-      // Alihkan ke WhatsApp setelah data dipastikan terkirim
-      window.location.href = `https://wa.me{NOMOR_ADMIN}?text=${pesanWA}`;
+      if (whatsappWindow) {
+        whatsappWindow.location.href = whatsappUrl;
+      } else {
+        window.location.href = whatsappUrl;
+      }
     });
 
+    function escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[char]));
+    }
+
     function filterPesanan() {
-      const qPO = document.getElementById('cariPO').value.trim().toLowerCase();
-      const qNama = document.getElementById('cariNama').value.trim().toLowerCase();
-      const qWA = document.getElementById('cariWA').value.trim().toLowerCase();
-      const wadah = document.getElementById('hasilPencarian');
+      const queryPO = document.getElementById('cariPO').value.trim().toLowerCase();
+      const queryNama = document.getElementById('cariNama').value.trim().toLowerCase();
+      const queryWA = document.getElementById('cariWA').value.trim().toLowerCase();
+      const target = document.getElementById('hasilPencarian');
+      const jumlahKolom = [queryPO, queryNama, queryWA].filter((value) => value.length >= 2).length;
 
-      const kolomTerisi = [qPO, qNama, qWA].filter(val => val.length >= 2).length;
-
-      if (kolomTerisi < 2) {
-        wadah.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center;">Masukkan minimal 2 kolom input (minimal 2 huruf/angka per kolom) untuk membuka status pesanan.</p>`;
+      if (jumlahKolom < 2) {
+        target.innerHTML = '<p class="empty-message">Masukkan minimal 2 kolom (masing-masing minimal 2 karakter) untuk mencari pesanan.</p>';
         return;
       }
-
-      const hasil = semuaDataPO.filter(item => {
-        const matchPO = !qPO || String(item.no_po || '').toLowerCase().includes(qPO);
-        const matchNama = !qNama || String(item.nama || '').toLowerCase().includes(qNama);
-        const matchWA = !qWA || String(item.wa || '').toLowerCase().includes(qWA);
-        return matchPO && matchNama && matchWA;
-      });
-
-      if (hasil.length === 0) {
-        wadah.innerHTML = `<p style="color:#f87171; font-size:13px; text-align:center;">Data pesanan tidak ditemukan. Periksa kembali ejaan Nama atau Nomor HP Anda.</p>`;
+      const hasil = semuaDataPO.filter((item) =>
+        (!queryPO || String(item.no_po || '').toLowerCase().includes(queryPO)) &&
+        (!queryNama || String(item.nama || '').toLowerCase().includes(queryNama)) &&
+        (!queryWA || String(item.wa || '').replace(/^'/, '').toLowerCase().includes(queryWA))
+      );
+      if (!hasil.length) {
+        target.innerHTML = '<p class="empty-message">Data pesanan tidak ditemukan. Periksa kembali nama atau nomor HP.</p>';
         return;
       }
-
-      wadah.innerHTML = hasil.map(item => {
-        const isLunas = String(item.status_bayar || '').toUpperCase() === 'LUNAS';
-        const badgeClass = isLunas ? 'status-lunas' : 'status-belum';
-        return `
-          <div class="order-item">
-            <div class="order-top">
-              <div>
-                <span class="po-badge">${item.no_po || '-'}</span>
-                <span style="color:#64748b; font-size:12px; margin-left:8px;">${item.tanggal || '-'}</span>
-              </div>
-              <span class="status-badge ${badgeClass}">${item.status_bayar || 'BELUM LUNAS'}</span>
-            </div>
-            <div class="order-detail">
-              <strong>${item.pesanan || '-'}</strong><br>
-              <span style="color:#10b981; font-weight:700;">Total: ${item.total || '-'}</span>
-            </div>
-            <div style="font-size:13px; color:#cbd5e1; margin-bottom:10px;">
-              Resi Pengiriman: <strong style="color:#38bdf8;">${item.resi || '-'}</strong>
-            </div>
-            <div class="order-meta">
-              <span>Pemesan: ${item.nama || '-'}</span>
-              <span>Alamat: ${item.alamat || '-'}</span>
-            </div>
-          </div>
-        `;
+      target.innerHTML = hasil.map((item) => {
+        const status = escapeHTML(item.status_bayar || 'BELUM LUNAS');
+        const isLunas = status.toUpperCase() === 'LUNAS';
+        return `<article class="order-item">
+          <div class="order-top"><span class="po-badge">${escapeHTML(item.no_po || '-')}</span>
+          <span class="status-badge ${isLunas ? 'status-lunas' : 'status-belum'}">${status}</span></div>
+          <div class="order-detail"><strong>${escapeHTML(item.pesanan || '-')}</strong><br>
+          Total: <strong style="color:#00d395">${escapeHTML(item.total || '-')}</strong><br>
+          Resi: ${escapeHTML(item.resi || '-')}</div>
+          <div class="order-meta"><span>Pemesan: ${escapeHTML(item.nama || '-')}</span><span>${escapeHTML(item.tanggal || '')}</span></div>
+        </article>`;
       }).join('');
     }
 
-    muatDataSheets();
-    setInterval(muatDataSheets, 15000);
+    hitungTotal();
   </script>
+</body>
+</html>
