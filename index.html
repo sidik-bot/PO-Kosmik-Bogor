@@ -190,14 +190,28 @@
     }
 
     function hitungTotal() {
-      const sel = document.getElementById('ukuran');
-      const opt = sel.options[sel.selectedIndex];
-      const harga = opt ? parseInt(opt.getAttribute('data-harga') || 0) : 0;
-      const qty = parseInt(document.getElementById('jumlah').value || 0);
-      const total = harga * qty;
-    document.getElementById('totalDisplay').innerText = 'Rp ' + total.toLocaleString('id-ID');
-return total;
+  const sel = document.getElementById('ukuran');
+  const opt = sel.options[sel.selectedIndex];
+  let harga = 0;
+
+  if (opt && opt.value !== "") {
+    if (opt.getAttribute('data-harga')) {
+      harga = parseInt(opt.getAttribute('data-harga'));
+    } else {
+      // Otomatis ambil angka dari teks seperti "XL - Rp 150.000"
+      const teksHarga = opt.text.split('Rp')[1];
+      if (teksHarga) {
+        harga = parseInt(teksHarga.replace(/\./g, '').trim()) || 0;
+      }
+    }
+  }
+
+  const qty = parseInt(document.getElementById('jumlah').value || 0);
+  const total = harga * qty;
+  document.getElementById('totalDisplay').innerText = 'Rp ' + total.toLocaleString('id-ID');
+  return total;
 }
+
 document.getElementById('orderForm').addEventListener('submit', async function(e) {
 e.preventDefault();
 const btn = document.getElementById('submitBtn');
