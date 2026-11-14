@@ -7,163 +7,43 @@
   <meta name="description" content="Form pemesanan kaos Kosmik Bogor dan cek status pesanan.">
   <title>PO-Kosmik Bogor | Form &amp; Cek Status</title>
   <style>
-    :root {
-      color-scheme: dark;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #0b1120;
-      color: #f8fafc;
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      min-height: 100vh;
-      margin: 0;
-      padding: 15px 16px;
-      background: #0b1120;
-    }
-
-    .navbar,
-    .container {
-      width: min(100%, 584px);
-      margin-right: auto;
-      margin-left: auto;
-    }
-
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .brand { color: #9db4d7; font-size: 12px; }
-    .brand strong { display: block; margin-bottom: 3px; color: #f8fafc; font-size: 14px; }
-    .nav-tabs { display: flex; gap: 7px; }
-
-    .tab-btn {
-      padding: 8px 11px;
-      border: 1px solid #293852;
-      border-radius: 7px;
-      background: #141e33;
-      color: #cbd5e1;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .tab-btn.active { border-color: #2563eb; background: #1d4ed8; color: #fff; }
-    .card { padding: 24px 21px 19px; border: 1px solid #293852; border-radius: 11px; background: #141e33; }
-
-    .form-header {
-      margin-bottom: 21px;
-      padding-bottom: 17px;
-      border-bottom: 1px solid #293852;
-      text-align: center;
-    }
-
-    .form-header h1 { margin: 0 0 7px; color: #fff; font-size: 18px; line-height: 1.3; }
-    .form-header p { margin: 0; color: #9db4d7; font-size: 12px; }
-    .form-group { margin-bottom: 16px; }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      color: #dbe5f3;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .required { color: #fca5a5; }
-
-    input,
-    select,
-    textarea {
-      display: block;
-      width: 100%;
-      min-height: 39px;
-      padding: 10px 13px;
-      border: 1px solid #34445f;
-      border-radius: 8px;
-      outline: none;
-      background: #0b1120;
-      color: #f8fafc;
-      font: inherit;
-      font-size: 12px;
-    }
-
-    input::placeholder,
-    textarea::placeholder { color: #718198; }
-    input:focus, select:focus, textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgb(59 130 246 / 18%); }
-    select { cursor: pointer; }
-    textarea { min-height: 68px; resize: vertical; }
-
-    .total-box {
-      display: flex;
-      min-height: 48px;
-      align-items: center;
-      justify-content: space-between;
-      margin: 19px 0 16px;
-      padding: 0 14px;
-      border: 1px solid #293852;
-      border-radius: 8px;
-      background: #0b1120;
-      font-size: 12px;
-    }
-
-    .total-box span:first-child { color: #cbd5e1; }
-    #totalDisplay { color: #00d395; font-size: 16px; font-weight: 700; }
-
-    .btn-primary {
-      width: 100%;
-      min-height: 42px;
-      padding: 10px;
-      border: 0;
-      border-radius: 8px;
-      background: linear-gradient(100deg, #2864ea, #1d4ed8);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .btn-primary:hover { filter: brightness(1.08); }
-    .btn-primary:disabled { opacity: .65; cursor: wait; }
-    button:focus-visible { outline: 2px solid #93c5fd; outline-offset: 3px; }
-    .hidden { display: none !important; }
-
-    .info-box {
-      margin-bottom: 18px;
-      padding: 12px;
-      border: 1px solid #34445f;
-      border-radius: 8px;
-      color: #9db4d7;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-    .search-grid .form-group { margin: 0; }
-    .order-item { margin-top: 14px; padding: 16px; border: 1px solid #34445f; border-radius: 9px; background: #0b1120; }
-    .order-top, .order-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-    .order-top { padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #293852; }
-    .po-badge { color: #60a5fa; font-family: monospace; font-weight: 700; }
-    .status-badge { padding: 4px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-    .status-lunas { border: 1px solid #059669; color: #34d399; }
-    .status-belum { border: 1px solid #d97706; color: #fbbf24; }
-    .order-detail { margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
-    .order-meta { padding-top: 9px; border-top: 1px solid #293852; color: #9db4d7; font-size: 12px; }
-    .empty-message { color: #9db4d7; font-size: 12px; text-align: center; }
-
-    @media (max-width: 480px) {
-      body { padding: 12px; }
-      .card { padding: 21px 16px 17px; }
-      .brand { font-size: 11px; }
-      .tab-btn { padding: 7px 8px; }
-    }
+    :root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif;background:#0b1120;color:#f8fafc;font-synthesis:none;text-rendering:optimizeLegibility}
+    *{box-sizing:border-box}
+    body{min-height:100vh;margin:0;padding:15px 16px;background:#0b1120}
+    .navbar,.container{width:min(100%,584px);margin-right:auto;margin-left:auto}
+    .navbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .brand{color:#9db4d7;font-size:12px}.brand strong{display:block;margin-bottom:3px;color:#f8fafc;font-size:14px}
+    .nav-tabs{display:flex;gap:7px}
+    .tab-btn{padding:8px 11px;border:1px solid #293852;border-radius:7px;background:#141e33;color:#cbd5e1;font-size:12px;font-weight:600;cursor:pointer}
+    .tab-btn.active{border-color:#2563eb;background:#1d4ed8;color:#fff}
+    .card{padding:24px 21px 19px;border:1px solid #293852;border-radius:11px;background:#141e33}
+    .form-header{margin-bottom:21px;padding-bottom:17px;border-bottom:1px solid #293852;text-align:center}
+    .form-header h1{margin:0 0 7px;color:#fff;font-size:18px;line-height:1.3}
+    .form-header p{margin:0;color:#9db4d7;font-size:12px}
+    .form-group{margin-bottom:16px}
+    label{display:block;margin-bottom:6px;color:#dbe5f3;font-size:12px;font-weight:700}
+    .required{color:#fca5a5}
+    input,select,textarea{display:block;width:100%;min-height:39px;padding:10px 13px;border:1px solid #34445f;border-radius:8px;outline:none;background:#0b1120;color:#f8fafc;font:inherit;font-size:12px}
+    input::placeholder,textarea::placeholder{color:#718198}
+    input:focus,select:focus,textarea:focus{border-color:#3b82f6;box-shadow:0 0 0 2px rgb(59 130 246 / 18%)}
+    select{cursor:pointer}textarea{min-height:68px;resize:vertical}
+    .total-box{display:flex;min-height:48px;align-items:center;justify-content:space-between;margin:19px 0 16px;padding:0 14px;border:1px solid #293852;border-radius:8px;background:#0b1120;font-size:12px}
+    .total-box span:first-child{color:#cbd5e1}#totalDisplay{color:#00d395;font-size:16px;font-weight:700}
+    .btn-primary{width:100%;min-height:42px;padding:10px;border:0;border-radius:8px;background:linear-gradient(100deg,#2864ea,#1d4ed8);color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+    .btn-primary:hover{filter:brightness(1.08)}.btn-primary:disabled{opacity:.65;cursor:wait}
+    button:focus-visible{outline:2px solid #93c5fd;outline-offset:3px}.hidden{display:none!important}
+    .info-box{margin-bottom:18px;padding:12px;border:1px solid #34445f;border-radius:8px;color:#9db4d7;font-size:12px;line-height:1.5}
+    .search-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.search-grid .form-group{margin:0}
+    .order-item{margin-top:14px;padding:16px;border:1px solid #34445f;border-radius:9px;background:#0b1120}
+    .order-top,.order-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    .order-top{padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid #293852}
+    .po-badge{color:#60a5fa;font-family:monospace;font-weight:700}
+    .status-badge{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:700}
+    .status-lunas{border:1px solid #059669;color:#34d399}.status-belum{border:1px solid #d97706;color:#fbbf24}
+    .order-detail{margin-bottom:10px;font-size:13px;line-height:1.6}
+    .order-meta{padding-top:9px;border-top:1px solid #293852;color:#9db4d7;font-size:12px}
+    .empty-message{color:#9db4d7;font-size:12px;text-align:center}
+    @media(max-width:480px){body{padding:12px}.card{padding:21px 16px 17px}.brand{font-size:11px}.tab-btn{padding:7px 8px}}
   </style>
 </head>
 <body>
@@ -177,81 +57,46 @@
 
   <main class="container">
     <section id="viewForm" class="card" aria-labelledby="formTitle">
-      <div class="form-header">
-        <h1 id="formTitle">Form Order Kaos Kosmik Bogor</h1>
-        <p>Komunitas Sepeda/Motor Listrik Kosmik Indonesia</p>
-      </div>
-
+      <div class="form-header"><h1 id="formTitle">Form Order Kaos Kosmik Bogor</h1><p>Komunitas Sepeda/Motor Listrik Kosmik Indonesia</p></div>
       <form id="orderForm">
-        <div class="form-group">
-          <label for="nama">Nama Pemesan <span class="required">*</span></label>
-          <input type="text" id="nama" name="nama" autocomplete="name" required placeholder="Masukkan nama lengkap">
-        </div>
-        <div class="form-group">
-          <label for="wa">Nomor WhatsApp <span class="required">*</span></label>
-          <input type="tel" id="wa" name="wa" autocomplete="tel" inputmode="tel" required placeholder="Contoh: 081234567890">
-        </div>
-        <div class="form-group">
-          <label for="ukuran">Ukuran (Size) <span class="required">*</span></label>
-          <select id="ukuran" name="ukuran" required>
-            <option value="" disabled selected>-- Pilih Ukuran Kaos --</option>
-            <option value="S" data-harga="150000">S - Rp 150.000</option>
-            <option value="M" data-harga="150000">M - Rp 150.000</option>
-            <option value="L" data-harga="150000">L - Rp 150.000</option>
-            <option value="XL" data-harga="150000">XL - Rp 150.000</option>
-            <option value="XXL" data-harga="150000">XXL - Rp 150.000</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="jumlah">Jumlah (Pcs) <span class="required">*</span></label>
-          <input type="number" id="jumlah" name="jumlah" value="1" min="1" step="1" required inputmode="numeric">
-        </div>
-        <div class="form-group">
-          <label for="alamat">Alamat Pengiriman / Catatan <span class="required">*</span></label>
-          <textarea id="alamat" name="alamat" autocomplete="street-address" required placeholder="Tulis alamat lengkap atau catatan tambahan"></textarea>
-        </div>
-        <div class="total-box" aria-live="polite">
-          <span>Estimasi Total</span><span id="totalDisplay">Rp 0</span>
-        </div>
+        <div class="form-group"><label for="nama">Nama Pemesan <span class="required">*</span></label><input type="text" id="nama" name="nama" autocomplete="name" required placeholder="Masukkan nama lengkap"></div>
+        <div class="form-group"><label for="wa">Nomor WhatsApp <span class="required">*</span></label><input type="tel" id="wa" name="wa" autocomplete="tel" inputmode="tel" required placeholder="Contoh: 081234567890"></div>
+        <div class="form-group"><label for="ukuran">Ukuran (Size) <span class="required">*</span></label><select id="ukuran" name="ukuran" required><option value="" disabled selected>-- Pilih Ukuran Kaos --</option><option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option><option value="XXL">XXL</option></select></div>
+        <div class="form-group"><label for="jumlah">Jumlah (Pcs) <span class="required">*</span></label><input type="number" id="jumlah" name="jumlah" value="1" min="1" step="1" required inputmode="numeric"></div>
+        <div class="form-group"><label for="alamat">Alamat Pengiriman / Catatan <span class="required">*</span></label><textarea id="alamat" name="alamat" autocomplete="street-address" required placeholder="Tulis alamat lengkap atau catatan tambahan"></textarea></div>
+        <div class="total-box" aria-live="polite"><span>Estimasi Total</span><span id="totalDisplay">Rp 0</span></div>
         <button type="submit" class="btn-primary" id="submitBtn">Simpan &amp; Kirim ke WhatsApp</button>
       </form>
     </section>
 
     <section id="viewStatus" class="card hidden" aria-labelledby="statusTitle">
-      <div class="form-header">
-        <h1 id="statusTitle">Cek Status Pemesanan PO</h1>
-        <p>Isi minimal 2 kolom untuk mencari pesanan Anda.</p>
-      </div>
+      <div class="form-header"><h1 id="statusTitle">Cek Status Pemesanan PO</h1><p>Isi minimal 2 kolom untuk mencari pesanan Anda.</p></div>
       <div class="info-box">Mode verifikasi 2 kolom membantu menjaga privasi data pemesan. Masukkan setidaknya 2 kolom pencarian.</div>
       <div class="search-grid">
         <div class="form-group"><label for="cariPO">No. PO</label><input id="cariPO" autocomplete="off" placeholder="Contoh: PO-..." oninput="filterPesanan()"></div>
         <div class="form-group"><label for="cariNama">Nama Pemesan</label><input id="cariNama" autocomplete="off" placeholder="Nama Anda" oninput="filterPesanan()"></div>
         <div class="form-group"><label for="cariWA">Nomor HP</label><input id="cariWA" autocomplete="off" inputmode="tel" placeholder="Contoh: 0812..." oninput="filterPesanan()"></div>
       </div>
-      <div id="hasilPencarian" aria-live="polite" style="margin-top:16px">
-        <p class="empty-message">Silakan isi minimal 2 kolom di atas untuk mencari pesanan.</p>
-      </div>
+      <div id="hasilPencarian" aria-live="polite" style="margin-top:16px"><p class="empty-message">Silakan isi minimal 2 kolom di atas untuk mencari pesanan.</p></div>
     </section>
   </main>
 
   <script>
-    // URL Web App dari Google Apps Script. Lihat GOOGLE_SHEETS_SETUP.md.
     const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxDqY78dB3Pw41a0IsssGgUaS82s8bdOBSDuNNteY6fRH996EfgMEeJOXYPi6wS7KZfFA/exec';
     const NOMOR_ADMIN = '6281211855946';
     const HARGA_PER_SIZE = { S: 150000, M: 150000, L: 150000, XL: 150000, XXL: 150000 };
-    let semuaDataPO = [];
-    let pencarianAktif = false;
+    let timerPencarian;
+    let idRequestPencarian = 0;
 
-    const rupiah = (angka) => 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
+    const rupiah = angka => 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
 
     function hitungTotal() {
-      const ukuran = document.getElementById('ukuran').value;
-      const jumlah = Math.max(0, Number(document.getElementById('jumlah').value) || 0);
-      const total = (HARGA_PER_SIZE[ukuran] || 0) * jumlah;
+      const size = document.getElementById('ukuran').value;
+      const quantity = Math.max(0, Number(document.getElementById('jumlah').value) || 0);
+      const total = (HARGA_PER_SIZE[size] || 0) * quantity;
       document.getElementById('totalDisplay').textContent = rupiah(total);
       return total;
     }
-
     document.getElementById('ukuran').addEventListener('change', hitungTotal);
     document.getElementById('jumlah').addEventListener('input', hitungTotal);
 
@@ -266,94 +111,42 @@
       if (!showForm) filterPesanan();
     }
 
-    function escapeHTML(value) {
-      return String(value ?? '').replace(/[&<>"']/g, (char) => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-      }[char]));
-    }
-
-    function requestOrders(filters) {
+    function jsonp(params, timeoutMs = 20000) {
       return new Promise((resolve, reject) => {
-        const callbackName = 'ordersCallback_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+        const callback = 'kosmikCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
         const script = document.createElement('script');
-        const timeout = window.setTimeout(() => finish(new Error('Waktu permintaan habis.')), 15000);
-        const finish = (error, data) => {
-          window.clearTimeout(timeout);
-          delete window[callbackName];
+        let settled = false;
+        const finish = (error, value) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeout);
+          delete window[callback];
           script.remove();
-          if (error) reject(error);
-          else resolve(data);
+          error ? reject(error) : resolve(value);
         };
-        window[callbackName] = (data) => finish(null, data);
-        script.onerror = () => finish(new Error('Tidak dapat terhubung ke Google Sheets.'));
-        const params = new URLSearchParams({ action: 'list', callback: callbackName, ...filters });
-        script.src = `${URL_APPS_SCRIPT}?${params.toString()}`;
+        const timeout = setTimeout(() => finish(new Error('Waktu koneksi ke server habis.')), timeoutMs);
+        window[callback] = result => finish(null, result);
+        script.onerror = () => finish(new Error('Tidak dapat terhubung ke Apps Script. Periksa URL dan deployment Web App.'));
+        const query = new URLSearchParams({ ...params, callback });
+        script.src = `${URL_APPS_SCRIPT}?${query.toString()}`;
         document.head.appendChild(script);
       });
     }
 
-    async function muatDataSheets(filters) {
-      const target = document.getElementById('hasilPencarian');
-      target.innerHTML = '<p class="empty-message">Sedang mencari pesanan...</p>';
-      try {
-        const response = await requestOrders(filters);
-        if (!response || response.ok !== true) throw new Error(response?.error || 'Respons server tidak valid.');
-        semuaDataPO = Array.isArray(response.data) ? response.data : [];
-        renderPesanan(semuaDataPO);
-      } catch (error) {
-        console.error('Gagal mencari pesanan:', error);
-        target.innerHTML = '<p class="empty-message">Pencarian belum berhasil. Coba lagi atau hubungi admin.</p>';
-      }
+    function escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
     }
 
-    function filterPesanan() {
-      const queryPO = document.getElementById('cariPO').value.trim();
-      const queryNama = document.getElementById('cariNama').value.trim();
-      const queryWA = document.getElementById('cariWA').value.trim();
-      const filters = { no_po: queryPO, nama: queryNama, wa: queryWA };
-      const populated = Object.values(filters).filter((value) => value.length >= 2).length;
-
-      if (populated < 2) {
-        pencarianAktif = false;
-        document.getElementById('hasilPencarian').innerHTML = '<p class="empty-message">Masukkan minimal 2 kolom (masing-masing minimal 2 karakter) untuk mencari pesanan.</p>';
-        return;
-      }
-      const key = JSON.stringify(filters);
-      if (filterPesanan.lastKey === key && pencarianAktif) return;
-      filterPesanan.lastKey = key;
-      pencarianAktif = true;
-      muatDataSheets(filters);
+    async function simpanPesanan(fields) {
+      const result = await jsonp({ action: 'simpan', ...fields });
+      if (!result || result.ok !== true) throw new Error(result?.error || 'Apps Script menolak pesanan.');
+      return result;
     }
 
-    function renderPesanan(hasil) {
-      const target = document.getElementById('hasilPencarian');
-      if (!hasil.length) {
-        target.innerHTML = '<p class="empty-message">Data pesanan tidak ditemukan. Periksa kembali nama atau nomor HP.</p>';
-        return;
-      }
-      target.innerHTML = hasil.map((item) => {
-        const status = String(item.status_bayar || 'BELUM LUNAS');
-        const isLunas = status.toUpperCase() === 'LUNAS';
-        return `<article class="order-item">
-          <div class="order-top">
-            <span class="po-badge">${escapeHTML(item.no_po || '-')}</span>
-            <span class="status-badge ${isLunas ? 'status-lunas' : 'status-belum'}">${escapeHTML(status)}</span>
-          </div>
-          <div class="order-detail">
-            <strong>${escapeHTML(item.pesanan || '-')}</strong><br>
-            Total: <strong style="color:#00d395">${escapeHTML(item.total || '-')}</strong><br>
-            Resi: ${escapeHTML(item.resi || '-')}
-          </div>
-          <div class="order-meta"><span>Pemesan: ${escapeHTML(item.nama || '-')}</span><span>${escapeHTML(item.tanggal || '')}</span></div>
-        </article>`;
-      }).join('');
-    }
-
-    document.getElementById('orderForm').addEventListener('submit', async (event) => {
+    document.getElementById('orderForm').addEventListener('submit', async event => {
       event.preventDefault();
       const form = event.currentTarget;
       if (!form.reportValidity()) return;
-
       const button = document.getElementById('submitBtn');
       button.disabled = true;
       button.textContent = 'Menyimpan pesanan...';
@@ -367,36 +160,66 @@
       const alamat = document.getElementById('alamat').value.trim();
       const totalText = rupiah(hitungTotal());
       const pesanan = `Kaos Kosmik Size ${ukuran} (${jumlah}x)`;
-      const fields = { action: 'simpan', no_po: noPO, tanggal, nama, wa, ukuran, jumlah: String(jumlah), pesanan, total: totalText, alamat };
-      const whatsappText = [
-        '*ORDER KAOS KOSMIK BOGOR*', `No. PO: *${noPO}*`,
-        `Nama: ${nama}`, `No. WA: ${wa}`, `Pesanan: ${pesanan}`,
-        `Total: ${totalText}`, `Alamat: ${alamat}`
-      ].join('\n');
+      const fields = { no_po: noPO, tanggal, nama, wa, ukuran, jumlah: String(jumlah), pesanan, total: totalText, alamat };
+      const whatsappText = ['*ORDER KAOS KOSMIK BOGOR*', `No. PO: *${noPO}*`, `Nama: ${nama}`, `No. WA: ${wa}`, `Pesanan: ${pesanan}`, `Total: ${totalText}`, `Alamat: ${alamat}`].join('\n');
       const whatsappUrl = `https://wa.me/${NOMOR_ADMIN}?text=${encodeURIComponent(whatsappText)}`;
-      const whatsappWindow = window.open('about:blank', '_blank');
 
       try {
-        // Request form-urlencoded sederhana; no-cors mengizinkan browser mengirimkannya ke Apps Script.
-        await fetch(URL_APPS_SCRIPT, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-          body: new URLSearchParams(fields).toString()
-        });
+        await simpanPesanan(fields);
         form.reset();
         hitungTotal();
-        if (whatsappWindow) whatsappWindow.location.href = whatsappUrl;
-        else window.location.href = whatsappUrl;
+        alert(`Pesanan ${noPO} berhasil disimpan. WhatsApp akan dibuka untuk mengirim detail pesanan.`);
+        window.location.href = whatsappUrl;
       } catch (error) {
-        console.error('Pengiriman pesanan gagal:', error);
-        if (whatsappWindow) whatsappWindow.close();
-        alert('Pesanan belum dapat dikirim. Periksa koneksi internet lalu coba lagi.');
+        console.error('Gagal menyimpan pesanan:', error);
+        alert(`Pesanan belum tersimpan di Google Sheets. ${error.message}\n\nSilakan coba lagi atau hubungi admin.`);
       } finally {
         button.disabled = false;
         button.textContent = 'Simpan & Kirim ke WhatsApp';
       }
     });
+
+    function filterPesanan() {
+      clearTimeout(timerPencarian);
+      const filters = {
+        no_po: document.getElementById('cariPO').value.trim(),
+        nama: document.getElementById('cariNama').value.trim(),
+        wa: document.getElementById('cariWA').value.trim()
+      };
+      const populated = Object.values(filters).filter(value => value.length >= 2).length;
+      const target = document.getElementById('hasilPencarian');
+      if (populated < 2) {
+        target.innerHTML = '<p class="empty-message">Masukkan minimal 2 kolom (masing-masing minimal 2 karakter) untuk mencari pesanan.</p>';
+        return;
+      }
+      const requestId = ++idRequestPencarian;
+      target.innerHTML = '<p class="empty-message">Sedang mencari pesanan...</p>';
+      timerPencarian = setTimeout(async () => {
+        try {
+          const result = await jsonp({ action: 'list', ...filters });
+          if (requestId !== idRequestPencarian) return;
+          if (!result || result.ok !== true) throw new Error(result?.error || 'Respons server tidak valid.');
+          renderPesanan(Array.isArray(result.data) ? result.data : []);
+        } catch (error) {
+          if (requestId !== idRequestPencarian) return;
+          console.error('Pencarian status gagal:', error);
+          target.innerHTML = '<p class="empty-message">Pencarian gagal. Pastikan Apps Script sudah di-deploy ulang sebagai Web App versi terbaru.</p>';
+        }
+      }, 350);
+    }
+
+    function renderPesanan(results) {
+      const target = document.getElementById('hasilPencarian');
+      if (!results.length) {
+        target.innerHTML = '<p class="empty-message">Data pesanan tidak ditemukan. Periksa kembali nama atau nomor HP.</p>';
+        return;
+      }
+      target.innerHTML = results.map(item => {
+        const status = String(item.status_bayar || 'BELUM LUNAS');
+        const lunas = status.toUpperCase() === 'LUNAS';
+        return `<article class="order-item"><div class="order-top"><span class="po-badge">${escapeHTML(item.no_po || '-')}</span><span class="status-badge ${lunas ? 'status-lunas' : 'status-belum'}">${escapeHTML(status)}</span></div><div class="order-detail"><strong>${escapeHTML(item.pesanan || '-')}</strong><br>Total: <strong style="color:#00d395">${escapeHTML(item.total || '-')}</strong><br>Resi: ${escapeHTML(item.resi || '-')}</div><div class="order-meta"><span>Pemesan: ${escapeHTML(item.nama || '-')}</span><span>${escapeHTML(item.tanggal || '')}</span></div></article>`;
+      }).join('');
+    }
 
     hitungTotal();
   </script>

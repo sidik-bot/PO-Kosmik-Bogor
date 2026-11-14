@@ -1,6 +1,6 @@
 /**
  * Google Apps Script backend untuk form PO Kosmik Bogor.
- * Gunakan script ini sebagai project yang terikat (bound) ke Google Sheet.
+ * Pasang sebagai script yang terikat ke Google Sheet.
  */
 const SHEET_NAME = 'Pesanan';
 const HEADERS = [
@@ -10,63 +10,88 @@ const HEADERS = [
 
 function doGet(e) {
   const params = (e && e.parameter) || {};
-  if (params.action === 'list') {
-    const filters = {
-      no_po: normalize_(params.no_po),
-      nama: normalize_(params.nama),
-      wa: normalize_(params.wa)
-    };
-    const validFilters = Object.values(filters).filter(value => value.length >= 2).length;
-    if (validFilters < 2) {
-      return respond_({ ok: false, error: 'Isi minimal dua kolom pencarian.' }, params.callback);
+  try {
+    if (params.action === 'simpan') {
+      const result = saveOrder_(params);
+      return respond_(result, params.callback);
     }
 
-    const rows = getSheet_().getDataRange().getDisplayValues();
-    const header = rows.shift() || [];
-    const index = Object.fromEntries(header.map((value, i) => [value, i]));
-    const matches = rows
-      .filter(row => matches_(row, index, filters))
-      .slice(-100)
-      .reverse()
-      .map(row => Object.fromEntries(HEADERS.map(key => [key, row[index[key]] || ''])));
-    return respond_({ ok: true, data: matches }, params.callback);
-  }
+    if (params.action === 'list') {
+      const filters = {
+        no_po: normalize_(params.no_po),
+        nama: normalize_(params.nama),
+        wa: normalize_(params.wa)
+      };
+      const filled = Object.values(filters).filter(value => value.length >= 2).length;
+      if (filled < 2) {
+        return respond_({ ok: false, error: 'Isi minimal dua kolom pencarian.' }, params.callback);
+      }
 
-  return respond_({ ok: true, message: 'PO Kosmik Bogor API siap.' }, params.callback);
+      const sheet = getSheet_();
+      const rows = sheet.getDataRange().getDisplayValues();
+      const header = rows.shift() || [];
+      const index = Object.fromEntries(header.map((value, i) => [value, i]));
+      const matches = rows
+        .filter(row => matches_(row, index, filters))
+        .slice(-100)
+        .reverse()
+        .map(row => Object.fromEntries(HEADERS.map(key => [key, row[index[key]] || ''])));
+      return respond_({ ok: true, data: matches }, params.callback);
+    }
+
+    return respond_({ ok: true, message: 'PO Kosmik Bogor API siap.' }, params.callback);
+  } catch (error) {
+    console.error(error);
+    return respond_({ ok: false, error: error.message || 'Terjadi kesalahan server.' }, params.callback);
+  }
 }
 
+// Tetap mendukung request POST jika kelak diperlukan.
 function doPost(e) {
-  const params = (e && e.parameter) || {};
+  try {
+    return json_(saveOrder_((e && e.parameter) || {}));
+  } catch (error) {
+    console.error(error);
+    return json_({ ok: false, error: error.message || 'Terjadi kesalahan server.' });
+  }
+}
+
+function saveOrder_(params) {
   if (params.action !== 'simpan') {
-    return json_({ ok: false, error: 'Aksi tidak dikenali.' });
+    return { ok: false, error: 'Aksi tidak dikenali.' };
   }
 
   const required = ['no_po', 'nama', 'wa', 'ukuran', 'jumlah', 'alamat'];
   const missing = required.filter(key => !String(params[key] || '').trim());
   if (missing.length) {
-    return json_({ ok: false, error: 'Data wajib belum lengkap: ' + missing.join(', ') });
+    return { ok: false, error: 'Data wajib belum lengkap: ' + missing.join(', ') };
+  }
+
+  const quantity = parseInt(params.jumlah, 10);
+  if (!Number.isFinite(quantity) || quantity < 1) {
+    return { ok: false, error: 'Jumlah pesanan tidak valid.' };
   }
 
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
     const sheet = getSheet_();
-    const noPO = safeCell_(params.no_po);
     const values = [
-      noPO,
+      safeCell_(params.no_po),
       safeCell_(params.tanggal || new Date().toLocaleDateString('id-ID')),
       safeCell_(params.nama),
       safeCell_(params.wa),
       safeCell_(params.ukuran),
-      Math.max(1, parseInt(params.jumlah, 10) || 1),
-      safeCell_(params.pesanan || `Kaos Kosmik Size ${params.ukuran}`),
+      quantity,
+      safeCell_(params.pesanan || `Kaos Kosmik Size ${params.ukuran} (${quantity}x)`),
       safeCell_(params.total || ''),
       safeCell_(params.alamat),
       'BELUM LUNAS',
       ''
     ];
     sheet.appendRow(values);
-    return json_({ ok: true, no_po: noPO });
+    SpreadsheetApp.flush();
+    return { ok: true, no_po: String(params.no_po) };
   } finally {
     lock.releaseLock();
   }
@@ -74,7 +99,9 @@ function doPost(e) {
 
 function getSheet_() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  if (!spreadsheet) throw new Error('Buat Apps Script dari dalam Google Sheet (Extensions > Apps Script).');
+  if (!spreadsheet) {
+    throw new Error('Spreadsheet tidak ditemukan. Buat Apps Script dari Google Sheet melalui Extensions > Apps Script.');
+  }
   let sheet = spreadsheet.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = spreadsheet.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {
@@ -88,6 +115,7 @@ function getSheet_() {
 function matches_(row, index, filters) {
   return Object.entries(filters).every(([key, query]) => {
     if (!query) return true;
+    if (index[key] === undefined) return false;
     const value = String(row[index[key]] || '').replace(/^'/, '').toLowerCase();
     return value.includes(query);
   });
@@ -97,10 +125,10 @@ function normalize_(value) {
   return String(value || '').trim().toLowerCase();
 }
 
-// Hindari input pesanan dianggap formula oleh Google Sheets.
+// Cegah nilai dari pengguna dieksekusi sebagai formula di Google Sheets.
 function safeCell_(value) {
   const text = String(value == null ? '' : value).trim();
-  return /^[=+@]/.test(text) || /^-/.test(text) ? "'" + text : text;
+  return /^[=+@-]/.test(text) ? "'" + text : text;
 }
 
 function json_(data) {
@@ -108,15 +136,14 @@ function json_(data) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// Hasil JSONP untuk pembacaan lintas domain dari GitHub Pages.
+// JSONP dipakai agar halaman GitHub Pages dapat membaca hasil lintas domain.
 function respond_(data, callback) {
   if (callback) {
-    if (!/^[A-Za-z_$][\w$]{0, hundert}$/.test(callback)) {
-      // Validation below uses a strict callback pattern; reject malformed names.
+    if (!/^[A-Za-z_$][\w$]{0,99}$/.test(callback)) {
       return json_({ ok: false, error: 'Callback tidak valid.' });
     }
-    const script = `${callback}(${JSON.stringify(data).replace(/</g, '\\u003c')});`;
-    return ContentService.createTextOutput(script)
+    const safeJson = JSON.stringify(data).replace(/</g, '\\u003c');
+    return ContentService.createTextOutput(`${callback}(${safeJson});`)
       .setMimeType(ContentService.MimeType.JAVASCRIPT);
   }
   return json_(data);
