@@ -195,91 +195,122 @@
     }
 
     function switchTab(tab) {
-document.getElementById('btnTabForm').classList.toggle('active', tab === 'form');
-document.getElementById('btnTabStatus').classList.toggle('active', tab === 'status');
-document.getElementById('viewForm').classList.toggle('hidden', tab !== 'form');
-document.getElementById('viewStatus').classList.toggle('hidden', tab !== 'status');
-if (tab === 'status') muatDataSheets();
-}
-document.getElementById('orderForm').addEventListener('submit', async function(e) {
-e.preventDefault();
-const btn = document.getElementById('submitBtn');
-btn.disabled = true;
-btn.innerText = "Menyimpan Pesanan...";
-const noPO = "PO-" + Date.now().toString().slice(-6);
-const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-const nama = document.getElementById('nama').value.trim();
-const wa = document.getElementById('wa').value.trim();
-const ukuran = document.getElementById('ukuran').value;
-const jumlah = document.getElementById('jumlah').value;
-const alamat = document.getElementById('alamat').value.trim();
-const totalAngka = hitungTotal();
-const pesananText = Kaos Kosmik Size ${ukuran} (${jumlah}x);
-const payload = {
-no_po: noPO,
-tanggal: tanggal,
-nama: nama,
-wa: wa,
-pesanan: pesananText,
-total: "Rp " + totalAngka.toLocaleString('id-ID'),
-alamat: alamat
-};
-// 1. Kirim ke Google Sheets dengan mode no-cors agar tidak diblokir browser
-if (URL_APPS_SCRIPT && !URL_APPS_SCRIPT.includes("PASTE_URL")) {
-try {
-await fetch(URL_APPS_SCRIPT, {
-method: 'POST',
-mode: 'no-cors',
-headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-body: JSON.stringify(payload)
-});
-} catch (err) {
-console.error("Error kirim Sheets:", err);
-}
-}
-// 2. Siapkan pesan WhatsApp
-const pesanWA = *ORDER KAOS KOSMIK BOGOR*%0A +
-No. PO: *${noPO}*%0A +
-----------------------------------%0A +
-*Nama:* ${encodeURIComponent(nama)}%0A +
-*No. WA:* ${encodeURIComponent(wa)}%0A +
-*Pesanan:* ${encodeURIComponent(pesananText)}%0A +
-*Total:* Rp ${totalAngka.toLocaleString('id-ID')}%0A +
-*Alamat:* ${encodeURIComponent(alamat)};
-btn.disabled = false;
-btn.innerText = "Simpan & Kirim ke WhatsApp";
-document.getElementById('orderForm').reset();
-hitungTotal();
-setTimeout(muatDataSheets, 2000);
-// 3. Buka WhatsApp (menggunakan location.href agar tidak diblokir pop-up blocker HP/Browser)
-window.location.href = https://wa.me{NOMOR_ADMIN}?text=${pesanWA};
-});
-function filterPesanan() {
-const qPO = document.getElementById('cariPO').value.trim().toLowerCase();
-const qNama = document.getElementById('cariNama').value.trim().toLowerCase();
-const qWA = document.getElementById('cariWA').value.trim().toLowerCase();
-const wadah = document.getElementById('hasilPencarian');
-const kolomTerisi = [qPO, qNama, qWA].filter(val => val.length >= 2).length;
-if (kolomTerisi < 2) {
-wadah.innerHTML = <p style="color:#64748b; font-size:13px; text-align:center;">Masukkan minimal 2 kolom input (minimal 2 huruf/angka per kolom) untuk membuka status pesanan.</p>;
-return;
-}
-const hasil = semuaDataPO.filter(item => {
-const matchPO = !qPO || String(item['No PO'] || '').toLowerCase().includes(qPO);
-const matchNama = !qNama || String(item['Nama'] || '').toLowerCase().includes(qNama);
-const matchWA = !qWA || String(item['No WA'] || '').toLowerCase().includes(qWA);
-return matchPO && matchNama && matchWA;
-});
-if (hasil.length === 0) {
-wadah.innerHTML = <p style="color:#f87171; font-size:13px; text-align:center;">Data pesanan tidak ditemukan. Periksa kembali ejaan Nama atau Nomor HP Anda.</p>;
-return;
-}
-wadah.innerHTML = hasil.map(item => {
-const isLunas = String(item['Status Bayar'] || '').toUpperCase() === 'LUNAS';
-const badgeClass = isLunas ? 'status-lunas' : 'status-belum';
-return <div class="order-item"> <div class="order-top"> <div> <span class="po-badge">${item['No PO'] || '-'}</span> <span style="color:#64748b; font-size:12px; margin-left:8px;">${item['Tanggal'] || '-'}</span> </div> <span class="status-badge ${badgeClass}">${item['Status Bayar'] || 'BELUM LUNAS'}</span> </div> <div class="order-detail"> <strong>${item['Pesanan'] || '-'}</strong><br> <span style="color:#10b981; font-weight:700;">Total: ${item['Total'] || '-'}</span> </div> <div style="font-size:13px; color:#cbd5e1; margin-bottom:10px;"> Resi Pengiriman: <strong style="color:#38bdf8;">${item['Resi Pengiriman'] || '-'}</strong> </div> <div class="order-meta"> <span>Pemesan: ${item['Nama'] || '-'}</span> <span>Alamat: ${item['Alamat'] || '-'}</span> </div> </div>;
-}).join('');
-}
-// Jalankan pertama kali
-muatDataSheets();
-setInterval(muatDataSheets, 15000);
+      document.getElementById('btnTabForm').classList.toggle('active', tab === 'form');
+      document.getElementById('btnTabStatus').classList.toggle('active', tab === 'status');
+      document.getElementById('viewForm').classList.toggle('hidden', tab !== 'form');
+      document.getElementById('viewStatus').classList.toggle('hidden', tab !== 'status');
+      if (tab === 'status') muatDataSheets();
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerText = "Sedang Menyimpan ke Database...";
+
+      const noPO = "PO-" + Date.now().toString().slice(-6);
+      const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      const nama = document.getElementById('nama').value.trim();
+      const wa = document.getElementById('wa').value.trim();
+      const ukuran = document.getElementById('ukuran').value;
+      const jumlah = document.getElementById('jumlah').value;
+      const alamat = document.getElementById('alamat').value.trim();
+      const totalAngka = hitungTotal();
+      const totalText = "Rp " + totalAngka.toLocaleString('id-ID');
+      const pesananText = `Kaos Kosmik Size ${ukuran} (${jumlah}x)`;
+
+      // Kirim data via parameter URL (GET) agar anti-blokir & langsung masuk Sheets
+      if (URL_APPS_SCRIPT && !URL_APPS_SCRIPT.includes("PASTE_URL")) {
+        const queryParams = new URLSearchParams({
+          action: "simpan",
+          no_po: noPO,
+          tanggal: tanggal,
+          nama: nama,
+          wa: "'" + wa, // Tanda kutip tunggal agar angka 0 di depan No HP tidak hilang di Sheets
+          pesanan: pesananText,
+          total: totalText,
+          alamat: alamat
+        });
+
+        try {
+          await fetch(`${URL_APPS_SCRIPT}?${queryParams.toString()}`);
+        } catch (err) {
+          console.error("Error simpan:", err);
+        }
+      }
+
+      const pesanWA = `*ORDER KAOS KOSMIK BOGOR*%0A` +
+                      `No. PO: *${noPO}*%0A` +
+                      `----------------------------------%0A` +
+                      `*Nama:* ${encodeURIComponent(nama)}%0A` +
+                      `*No. WA:* ${encodeURIComponent(wa)}%0A` +
+                      `*Pesanan:* ${encodeURIComponent(pesananText)}%0A` +
+                      `*Total:* ${encodeURIComponent(totalText)}%0A` +
+                      `*Alamat:* ${encodeURIComponent(alamat)}`;
+
+      btn.disabled = false;
+      btn.innerText = "Simpan & Kirim ke WhatsApp";
+      document.getElementById('orderForm').reset();
+      hitungTotal();
+
+      // Alihkan ke WhatsApp setelah data dipastikan terkirim
+      window.location.href = `https://wa.me{NOMOR_ADMIN}?text=${pesanWA}`;
+    });
+
+    function filterPesanan() {
+      const qPO = document.getElementById('cariPO').value.trim().toLowerCase();
+      const qNama = document.getElementById('cariNama').value.trim().toLowerCase();
+      const qWA = document.getElementById('cariWA').value.trim().toLowerCase();
+      const wadah = document.getElementById('hasilPencarian');
+
+      const kolomTerisi = [qPO, qNama, qWA].filter(val => val.length >= 2).length;
+
+      if (kolomTerisi < 2) {
+        wadah.innerHTML = `<p style="color:#64748b; font-size:13px; text-align:center;">Masukkan minimal 2 kolom input (minimal 2 huruf/angka per kolom) untuk membuka status pesanan.</p>`;
+        return;
+      }
+
+      const hasil = semuaDataPO.filter(item => {
+        const matchPO = !qPO || String(item.no_po || '').toLowerCase().includes(qPO);
+        const matchNama = !qNama || String(item.nama || '').toLowerCase().includes(qNama);
+        const matchWA = !qWA || String(item.wa || '').toLowerCase().includes(qWA);
+        return matchPO && matchNama && matchWA;
+      });
+
+      if (hasil.length === 0) {
+        wadah.innerHTML = `<p style="color:#f87171; font-size:13px; text-align:center;">Data pesanan tidak ditemukan. Periksa kembali ejaan Nama atau Nomor HP Anda.</p>`;
+        return;
+      }
+
+      wadah.innerHTML = hasil.map(item => {
+        const isLunas = String(item.status_bayar || '').toUpperCase() === 'LUNAS';
+        const badgeClass = isLunas ? 'status-lunas' : 'status-belum';
+        return `
+          <div class="order-item">
+            <div class="order-top">
+              <div>
+                <span class="po-badge">${item.no_po || '-'}</span>
+                <span style="color:#64748b; font-size:12px; margin-left:8px;">${item.tanggal || '-'}</span>
+              </div>
+              <span class="status-badge ${badgeClass}">${item.status_bayar || 'BELUM LUNAS'}</span>
+            </div>
+            <div class="order-detail">
+              <strong>${item.pesanan || '-'}</strong><br>
+              <span style="color:#10b981; font-weight:700;">Total: ${item.total || '-'}</span>
+            </div>
+            <div style="font-size:13px; color:#cbd5e1; margin-bottom:10px;">
+              Resi Pengiriman: <strong style="color:#38bdf8;">${item.resi || '-'}</strong>
+            </div>
+            <div class="order-meta">
+              <span>Pemesan: ${item.nama || '-'}</span>
+              <span>Alamat: ${item.alamat || '-'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    muatDataSheets();
+    setInterval(muatDataSheets, 15000);
+  </script>
